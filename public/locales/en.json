@@ -1,0 +1,44 @@
+{
+  "home": {
+    "education": "Education",
+    "work": "Work",
+    "about": "About Me",
+    "email": "Email",
+    "github": "Github",
+    "resume": "Resume"
+  },
+  "footer": {
+    "shutdown": "Shut down",
+    "logout": "Logout"
+  },
+  "about-me": {
+    "paragraph1": "Hi, my name is Barbara! I'm a Frontend Developer with a background in Industrial Design, which gave me a unique insight into human-centered design. I always think about how people will use my products and the experiences I want them to have.",
+    "paragraph2": "I discovered my passion for web development at Henry's bootcamp, where I learned the technical foundations that I apply to my projects today. This experience led me to redirect my studies toward app development, deepening my knowledge in programming and applied design.",
+    "paragraph3": "I'm currently pursuing a degree in Computer Science Applied to Multimedia and Website Design, which will allow me to continue growing in the field of web development and digital design."
+  },
+  "shutdown": {
+    "shakeMouse": "Shake mouse to wake up"
+  },
+  "login": {
+    "welcome": "Welcome!",
+    "signIn": "SIGN IN"
+  },
+  "music-player": {
+    "minimize": "Minimize player",
+    "volume": "Volume",
+    "previous": "Previous song",
+    "next": "Next song",
+    "play": "Play",
+    "pause": "Pause",
+    "songs": {
+      "rainy": {
+        "title": "Music for a rainy day",
+        "artist": "Lofi Rain"
+      },
+      "sunny": {
+        "title": "Music for a sunny day",
+        "artist": "Lofi Sun"
+      }
+    }
+  }
+}
