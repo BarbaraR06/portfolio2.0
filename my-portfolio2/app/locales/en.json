@@ -17,7 +17,8 @@
     "paragraph3": "I'm currently pursuing a degree in Computer Science Applied to Multimedia and Website Design, which will allow me to continue growing in the field of web development and digital design."
   },
   "shutdown": {
-    "shakeMouse": "Shake mouse to wake up"
+    "shakeMouse": "Shake mouse to wake up", 
+    "orClick": "or click to wake up"
   },
   "login": {
     "welcome": "Welcome!",

@@ -24,7 +24,7 @@ if (!i18n.isInitialized) {
     react: {
       useSuspense: false,
     },
-    debug: true,
+    debug: false,
   });
 }
 

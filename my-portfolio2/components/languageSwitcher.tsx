@@ -6,17 +6,17 @@ export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
 
   const changeLanguage = async (lng: string) => {
-    console.log("Changing language to:", lng);
+    // console.log("Changing language to:", lng);
     try {
       await i18n.changeLanguage(lng);
       document.documentElement.lang = lng;
-      console.log(
-        "Language changed successfully. Current language:",
-        i18n.language,
-      );
-      console.log("Available translations:", i18n.store.data);
+      // console.log(
+      //   "Language changed successfully. Current language:",
+      //   i18n.language,
+      // );
+      // console.log("Available translations:", i18n.store.data);
     } catch (error) {
-      console.error("Error changing language:", error);
+      // console.error("Error changing language:", error);
     }
   };
 

@@ -81,7 +81,7 @@ export default function Home() {
 
       <TransitionOverlay isActive={isTransitioning} />
       <div className="ml-4 mt-10 relative z-10">
-        <div className="grid grid-cols-2 grid-rows-3 w-1/2 gap-4 md:w-1/5 text-defaultText">
+        <div className="grid grid-cols-2 grid-rows-3 w-1/2 md:w-1/5 text-defaultText">
           {[
             {
               component: <Education />,

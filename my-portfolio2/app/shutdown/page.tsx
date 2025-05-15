@@ -13,37 +13,41 @@ export default function ShutdownPage() {
   useEffect(() => {
     let lastX = 0;
     let lastY = 0;
-    let shakeCount = 0;
     let lastShake = 0;
+
+    // Manejo de la transición
+    const triggerTransition = () => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        router.push("/");
+      }, 500);
+    };
+
+    const handleClick = () => {
+      triggerTransition();
+    };
+
 
     const handleMouseMove = (e: MouseEvent) => {
       const currentTime = new Date().getTime();
       const deltaX = Math.abs(e.clientX - lastX);
       const deltaY = Math.abs(e.clientY - lastY);
 
-      if (deltaX > 30 || deltaY > 30) {
-        if (currentTime - lastShake < 100) {
-          shakeCount++;
-          if (shakeCount >= 3) {
-            setIsTransitioning(true);
-            setTimeout(() => {
-              router.push("/");
-            }, 500);
-          }
-        } else {
-          shakeCount = 1;
-        }
-        lastShake = currentTime;
+      if ((deltaX > 30 || deltaY > 30) && (currentTime - lastShake < 100)) {
+        triggerTransition();
       }
 
+      lastShake = currentTime;
       lastX = e.clientX;
       lastY = e.clientY;
     };
 
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("click", handleClick);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("click", handleClick);
     };
   }, [router]);
 
@@ -59,6 +63,7 @@ export default function ShutdownPage() {
         />
         <div className="text-white text-xl text-center">
           <p>{t("shakeMouse")}</p>
+          <p>{t("orClick")}</p>
         </div>
       </div>
     </div>

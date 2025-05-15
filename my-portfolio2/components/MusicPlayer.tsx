@@ -118,11 +118,11 @@ export default function MusicPlayer() {
 
   return (
     <div
-      className={`fixed transition-all duration-300 ease-in-out ${
+      className={`fixed z-30 transition-all duration-300 ease-in-out ${
         isMinimized
           ? "bottom-16 right-4 w-12 h-12 rounded-full overflow-hidden cursor-pointer hover:scale-110"
           : "bottom-16 right-4 w-72 rounded-lg"
-      } bg-[#e3b1d2] backdrop-blur-lg`}
+      } bg-[#e3b1d2]/70 backdrop-blur-sm`}
       onClick={() => isMinimized && setIsMinimized(false)}
     >
       <audio
@@ -134,7 +134,7 @@ export default function MusicPlayer() {
       />
 
       {isMinimized ? (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className=" w-full h-full flex items-center justify-center">
           <img
             alt={t(`songs.${currentSong.id}.title`)}
             className="w-full h-full object-cover"

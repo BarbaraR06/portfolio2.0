@@ -17,7 +17,8 @@
     "paragraph3": "Actualmente, me encuentro estudiando la Tecnicatura en Informática Aplicada al Diseño Multimedia y de Sitios Web, lo que me permite seguir creciendo en el ámbito del desarrollo web y el diseño digital."
   },
   "shutdown": {
-    "shakeMouse": "Mueve el mouse para despertar"
+    "shakeMouse": "Mueve el mouse para despertar",
+    "orClick": "o haz clic para despertar"
   },
   "login": {
     "welcome": "Bienvenida!",
