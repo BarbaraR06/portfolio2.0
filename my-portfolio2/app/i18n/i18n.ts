@@ -10,23 +10,23 @@ const resources = {
   es,
 };
 
-console.log("i18n resources:", resources);
 
-i18n.use(initReactI18next).init({
-  resources,
-  lng: "en",
-  fallbackLng: "en",
-  defaultNS: "home",
-  ns: ["home", "footer", "about-me", "shutdown", "login", "music-player"],
-  interpolation: {
-    escapeValue: false,
-  },
-  react: {
-    useSuspense: false,
-  },
-  debug: true,
-});
-
+if (!i18n.isInitialized) {
+  i18n.use(initReactI18next).init({
+    resources,
+    lng: "en",
+    fallbackLng: "en",
+    defaultNS: "home",
+    ns: ["home", "footer", "about-me", "shutdown", "login", "music-player"],
+    interpolation: {
+      escapeValue: false,
+    },
+    react: {
+      useSuspense: false,
+    },
+    debug: true,
+  });
+}
 
 
 export default i18n;
