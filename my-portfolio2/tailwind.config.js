@@ -10,7 +10,7 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-bricolage)", "sans-serif"],
+        sans: ["var(--font-modak)", "sans-serif"],
       },
       backgroundImage: {
         "grid-pattern": `
