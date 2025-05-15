@@ -2412,9 +2412,15 @@ body {
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .fadeIn {
@@ -2424,8 +2430,12 @@ body {
 }
 
 @keyframes fadeIn {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .fadeOut {
@@ -2435,8 +2445,12 @@ body {
 }
 
 @keyframes fadeOut {
-  0% {opacity: 1;}
-  100% {opacity: 0;}
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .hover\:scale-110:hover {

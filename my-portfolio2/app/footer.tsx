@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, Dispatch, SetStateAction } from "react";
-import LanguageSwitcher from "@/components/languageSwitcher";
 import { useTranslation } from "react-i18next";
-import { useRouter } from 'next/navigation';
-import TransitionOverlay from "@/components/TransitionOverlay";
+import { useRouter } from "next/navigation";
+
+import LanguageSwitcher from "@/components/languageSwitcher";
 
 type FooterProps = {
   minimizedTabs: string[];
@@ -43,11 +43,11 @@ export default function Footer({
   };
 
   const handleShutdown = () => {
-    handleTransition('/shutdown');
+    handleTransition("/shutdown");
   };
 
   const handleLogout = () => {
-    handleTransition('/logout');
+    handleTransition("/logout");
   };
 
   return (
@@ -55,23 +55,23 @@ export default function Footer({
       <div className="flex items-center">
         <div className="flex">
           <img
-            src="/cat.svg"
             alt="Home cat icon"
-            onClick={toggleMenu}
             className="w-14 h-14 xl:w-15 xl:h-15 hover:bg-[#552445] p-2"
+            src="/cat.svg"
+            onClick={toggleMenu}
           />
         </div>
         {isMenuOpen && (
           <div className="text-defaultText font-bold absolute bottom-[3.5rem] left-0 bg-cvs-rose flex flex-col items-center w-1/2 md:w-1/6 rounded-t-lg">
-            <button 
-              onClick={handleShutdown}
+            <button
               className="hover:bg-[#e3cadb] w-full text-left p-2 pl-4 mt-4"
+              onClick={handleShutdown}
             >
               {t("shutdown")}
             </button>
-            <button 
-              onClick={handleLogout}
+            <button
               className="hover:bg-[#e3cadb] w-full text-left p-2 pl-4"
+              onClick={handleLogout}
             >
               {t("logout")}
             </button>
@@ -81,13 +81,13 @@ export default function Footer({
           {iconsInFooter.map((tab) => (
             <button
               key={tab}
-              onClick={() => onRestoreTab(tab)}
               className="bg-[#e3cadb] p-4 hover:bg-[#552445] transition-colors"
+              onClick={() => onRestoreTab(tab)}
             >
               <img
-                src={iconPaths[tab] || "/default-icon.svg"}
                 alt={tab}
                 className="w-6 h-6"
+                src={iconPaths[tab] || "/default-icon.svg"}
               />
             </button>
           ))}

@@ -8,19 +8,20 @@ export default function WorkModal() {
           Frontend Developer
         </h3>
         <p className="xl2:text-3xl font-bold">
-        <a
-            href="https://www.opengrano.com/"
-            target="_blank"
-            rel="noopener noreferrer"
+          <a
             className="text-cvs-lightBlue hover:text-cvs-pink transition-colors"
+            href="https://www.opengrano.com/"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             Opengrano
-          </a> - Web3 Platform | Open source project on{" "}
+          </a>{" "}
+          - Web3 Platform | Open source project on{" "}
           <a
-            href="https://www.thebadge.xyz/"
-            target="_blank"
-            rel="noopener noreferrer"
             className="text-cvs-lightBlue hover:text-cvs-pink transition-colors"
+            href="https://www.thebadge.xyz/"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             TheBadge
           </a>{" "}
@@ -41,8 +42,8 @@ export default function WorkModal() {
           <li className="flex items-start">
             <span className="text-cvs-lightBlue mr-2">•</span>
             <span>
-              Design the website's interface in Figma and then implement it on
-              the frontend, ensuring visual consistency.
+              Design the website&apos;s interface in Figma and then implement it
+              on the frontend, ensuring visual consistency.
             </span>
           </li>
         </ul>
@@ -55,10 +56,10 @@ export default function WorkModal() {
         <p className="xl2:text-3xl">
           FisioAhora - Internship at{" "}
           <a
-            href="https://www.linkedin.com/company/footalentgroup/"
-            target="_blank"
-            rel="noopener noreferrer"
             className="text-cvs-lightBlue hover:text-cvs-pink transition-colors"
+            href="https://www.linkedin.com/company/footalentgroup/"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             Foo Talent Group
           </a>{" "}

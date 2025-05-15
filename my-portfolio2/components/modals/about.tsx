@@ -13,15 +13,15 @@ export default function AboutMeModal() {
         <p>{t("paragraph3")}</p>
       </div>
       <div className="grid">
-        <img 
-          src="/pixel.svg" 
-          alt="About Me" 
+        <img
+          alt="About Me"
           className="col-start-1 row-start-1"
+          src="/pixel.svg"
         />
-        <img 
-          src="/shimmer.svg" 
-          alt="About Me" 
+        <img
+          alt="About Me"
           className="fade-in-out col-start-1 row-start-1"
+          src="/shimmer.svg"
         />
       </div>
     </div>

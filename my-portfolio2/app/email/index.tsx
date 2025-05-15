@@ -1,4 +1,5 @@
 import React from "react";
+
 import { CONTACT_EMAIL } from "@/config/constants";
 
 export default function Email() {
@@ -10,9 +11,9 @@ export default function Email() {
   return (
     <div className="items-center flex flex-col">
       <img
-        src="/mail.svg"
         alt="Email Icon"
         className="md:w-32 md:h-32 w-20 h-20"
+        src="/mail.svg"
         onClick={handleEmailClick}
       />
     </div>

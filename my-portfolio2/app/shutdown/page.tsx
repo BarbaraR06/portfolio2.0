@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
+
 import TransitionOverlay from "@/components/TransitionOverlay";
 
 export default function ShutdownPage() {
@@ -51,7 +52,11 @@ export default function ShutdownPage() {
       <TransitionOverlay isActive={isTransitioning} />
       <div className="absolute inset-0 bg-[#68254b] bg-opacity-90" />
       <div className="relative z-10 w-full h-full flex items-center justify-center flex-col">
-        <img src="/pixelSleep.svg" alt="Pixel Sleep" className="w-[30%] h-[30%]" />
+        <img
+          alt="Pixel Sleep"
+          className="w-[30%] h-[30%]"
+          src="/pixelSleep.svg"
+        />
         <div className="text-white text-xl text-center">
           <p>{t("shakeMouse")}</p>
         </div>

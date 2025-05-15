@@ -1,8 +1,9 @@
 import "@/styles/globals.css";
 import clsx from "clsx";
 import { Yomogi as YomogiFont } from "next/font/google";
+
 import { Providers } from "./providers";
-import { Metadata } from "next";
+
 import I18nClientProvider from "@/components/I18nClientProvider";
 import TransitionOverlay from "@/components/TransitionOverlay";
 
@@ -21,7 +22,7 @@ export default function RootLayout({
     <html suppressHydrationWarning>
       <head>
         <title>Barbie's Portfolio</title>
-        <link rel="icon" href="/bunny.ico" />
+        <link href="/bunny.ico" rel="icon" />
       </head>
       <body className={clsx(Yomogi.className)}>
         <I18nClientProvider>

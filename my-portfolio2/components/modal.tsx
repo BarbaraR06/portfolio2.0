@@ -30,6 +30,7 @@ export default function Modal({
   const startTouchDragging = (e: React.TouchEvent) => {
     setIsDragging(true);
     const touch = e.touches[0];
+
     setOffset({
       x: touch.clientX - (modalRef.current?.offsetLeft ?? 0),
       y: touch.clientY - (modalRef.current?.offsetTop ?? 0),
@@ -48,6 +49,7 @@ export default function Modal({
   const onTouchMove = (e: TouchEvent) => {
     if (isDragging && modalRef.current) {
       const touch = e.touches[0];
+
       modalRef.current.style.left = `${touch.clientX - offset.x}px`;
       modalRef.current.style.top = `${touch.clientY - offset.y}px`;
       e.preventDefault(); // Prevenir el scroll mientras se arrastra
@@ -72,6 +74,7 @@ export default function Modal({
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", stopDragging);
     }
+
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", stopDragging);
@@ -82,8 +85,8 @@ export default function Modal({
 
   return (
     <div
-      className="fixed top-20 left-20 w-[80%] min-h-[50%] max-h-[85vh] lg:w-[50%] bg-white border-4 border-cvs-lightBlue rounded-lg z-30 overflow-hidden"
       ref={modalRef}
+      className="fixed top-20 left-20 w-[80%] min-h-[50%] max-h-[85vh] lg:w-[50%] bg-white border-4 border-cvs-lightBlue rounded-lg z-30 overflow-hidden"
       onMouseDown={startDragging}
       onTouchStart={startTouchDragging}
     >
@@ -91,10 +94,10 @@ export default function Modal({
         <h2 className="text-white text-lg font-semibold">{title}</h2>
         <div className="flex space-x-2">
           <button onClick={onMinimize}>
-            <img src="/min.svg" alt="Minimize Icon" className="w-8 h-8" />
+            <img alt="Minimize Icon" className="w-8 h-8" src="/min.svg" />
           </button>
           <button onClick={onClose}>
-            <img src="/close.svg" alt="Close Icon" className="w-8 h-8" />
+            <img alt="Close Icon" className="w-8 h-8" src="/close.svg" />
           </button>
         </div>
       </div>

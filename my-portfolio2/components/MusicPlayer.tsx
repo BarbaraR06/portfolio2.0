@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Song {
   id: string;
@@ -8,26 +8,27 @@ interface Song {
   cover?: string;
 }
 
-const getGoogleDriveDirectLink = (shareLink: string) => {
-  const fileId = shareLink.match(/[-\w]{25,}/);
-  return fileId ? `https://drive.google.com/uc?export=download&id=${fileId[0]}` : shareLink;
+// Cloudinary URL helper
+const getCloudinaryUrl = (publicId: string) => {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  return `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}`;
 };
 
 const playlist: Song[] = [
   {
     id: "rainy",
-    file: getGoogleDriveDirectLink("https://drive.google.com/file/d/1EYDDS7CBesuVWLwUJ8XgkjnaW4axx75I/view?usp=drive_link"),
+    file: "https://res.cloudinary.com/dgft27lky/video/upload/v1747316493/portfolio/rainy.mp3",
     cover: "/music/cover.jpg",
   },
   {
     id: "sunny",
-    file: getGoogleDriveDirectLink("https://drive.google.com/file/d/105AmRwd-EcsNi_jSFaqxphMwtigbNtkn/view?usp=drive_link"),
+    file: "https://res.cloudinary.com/dgft27lky/video/upload/v1747316668/portfolio/sunny.mp3",
     cover: "/music/cover2.jpg",
   },
 ];
 
 export default function MusicPlayer() {
-  const { t } = useTranslation('music-player');
+  const { t } = useTranslation("music-player");
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -38,8 +39,18 @@ export default function MusicPlayer() {
 
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.addEventListener('error', (e) => {
-        console.error('Error loading audio:', e);
+      audioRef.current.addEventListener("error", (e) => {
+        console.error("Error loading audio:", e);
+        // Log more detailed error information
+        const audio = audioRef.current;
+        if (audio) {
+          console.error("Audio error details:", {
+            error: audio.error,
+            networkState: audio.networkState,
+            readyState: audio.readyState,
+            currentSrc: audio.currentSrc
+          });
+        }
       });
     }
   }, []);
@@ -56,8 +67,8 @@ export default function MusicPlayer() {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.play().catch(error => {
-          console.error('Error al reproducir:', error);
+        audioRef.current.play().catch((error) => {
+          console.error("Error al reproducir:", error);
         });
       }
       setIsPlaying(!isPlaying);
@@ -65,21 +76,22 @@ export default function MusicPlayer() {
   };
 
   const handlePrevious = () => {
-    setCurrentSongIndex((prevIndex) => 
-      prevIndex === 0 ? playlist.length - 1 : prevIndex - 1
+    setCurrentSongIndex((prevIndex) =>
+      prevIndex === 0 ? playlist.length - 1 : prevIndex - 1,
     );
     setIsPlaying(true);
   };
 
   const handleNext = () => {
-    setCurrentSongIndex((prevIndex) => 
-      prevIndex === playlist.length - 1 ? 0 : prevIndex + 1
+    setCurrentSongIndex((prevIndex) =>
+      prevIndex === playlist.length - 1 ? 0 : prevIndex + 1,
     );
     setIsPlaying(true);
   };
 
   const handleTimeSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = parseFloat(e.target.value);
+
     if (audioRef.current) {
       audioRef.current.currentTime = time;
       setCurrentTime(time);
@@ -88,6 +100,7 @@ export default function MusicPlayer() {
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
+
     setVolume(newVolume);
     if (audioRef.current) {
       audioRef.current.volume = newVolume;
@@ -97,34 +110,35 @@ export default function MusicPlayer() {
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const currentSong = playlist[currentSongIndex];
 
   return (
-    <div 
+    <div
       className={`fixed transition-all duration-300 ease-in-out ${
-        isMinimized 
-          ? 'bottom-16 right-4 w-12 h-12 rounded-full overflow-hidden cursor-pointer hover:scale-110'
-          : 'bottom-16 right-4 w-72 rounded-lg'
+        isMinimized
+          ? "bottom-16 right-4 w-12 h-12 rounded-full overflow-hidden cursor-pointer hover:scale-110"
+          : "bottom-16 right-4 w-72 rounded-lg"
       } bg-[#e3b1d2] backdrop-blur-lg`}
       onClick={() => isMinimized && setIsMinimized(false)}
     >
       <audio
         ref={audioRef}
-        src={currentSong.file}
-        onTimeUpdate={handleTimeUpdate}
-        onEnded={handleNext}
         autoPlay={isPlaying}
+        src={currentSong.file}
+        onEnded={handleNext}
+        onTimeUpdate={handleTimeUpdate}
       />
 
       {isMinimized ? (
         <div className="w-full h-full flex items-center justify-center">
           <img
-            src={currentSong.cover || "/music/default-cover.jpg"}
             alt={t(`songs.${currentSong.id}.title`)}
             className="w-full h-full object-cover"
+            src={currentSong.cover || "/music/default-cover.jpg"}
           />
         </div>
       ) : (
@@ -134,21 +148,31 @@ export default function MusicPlayer() {
               {t(`songs.${currentSong.id}.title`)}
             </h3>
             <button
-              onClick={() => setIsMinimized(true)}
+              aria-label={t("minimize")}
               className="text-white hover:text-cvs-lightBlue transition-colors"
-              aria-label={t('minimize')}
+              onClick={() => setIsMinimized(true)}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 9l-7 7-7-7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                />
               </svg>
             </button>
           </div>
 
           <div className="flex items-center mb-4">
             <img
-              src={currentSong.cover || "/music/cover.jpg"}
               alt={t(`songs.${currentSong.id}.title`)}
               className="w-16 h-16 rounded-md mr-3"
+              src={currentSong.cover || "/music/cover.jpg"}
             />
             <div>
               <p className="text-white text-sm">
@@ -156,14 +180,14 @@ export default function MusicPlayer() {
               </p>
               <div className="flex items-center mt-2">
                 <input
-                  type="range"
-                  min={0}
+                  aria-label={t("volume")}
+                  className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
                   max={1}
+                  min={0}
                   step={0.1}
+                  type="range"
                   value={volume}
                   onChange={handleVolumeChange}
-                  className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
-                  aria-label={t('volume')}
                 />
               </div>
             </div>
@@ -171,50 +195,68 @@ export default function MusicPlayer() {
 
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
-              <span className="text-white text-xs">{formatTime(currentTime)}</span>
+              <span className="text-white text-xs">
+                {formatTime(currentTime)}
+              </span>
               <input
-                type="range"
-                min={0}
+                className="flex-1 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
                 max={duration || 0}
+                min={0}
+                type="range"
                 value={currentTime}
                 onChange={handleTimeSeek}
-                className="flex-1 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
               />
               <span className="text-white text-xs">{formatTime(duration)}</span>
             </div>
 
             <div className="flex justify-center items-center space-x-4">
               <button
-                onClick={handlePrevious}
+                aria-label={t("previous")}
                 className="text-white hover:text-cvs-lightBlue transition-colors"
-                aria-label={t('previous')}
+                onClick={handlePrevious}
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                <svg
+                  className="w-6 h-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
                 </svg>
               </button>
               <button
-                onClick={handlePlayPause}
+                aria-label={isPlaying ? t("pause") : t("play")}
                 className="text-white hover:text-cvs-lightBlue transition-colors"
-                aria-label={isPlaying ? t('pause') : t('play')}
+                onClick={handlePlayPause}
               >
                 {isPlaying ? (
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                  <svg
+                    className="w-8 h-8"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                   </svg>
                 ) : (
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
+                  <svg
+                    className="w-8 h-8"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8 5v14l11-7z" />
                   </svg>
                 )}
               </button>
               <button
-                onClick={handleNext}
+                aria-label={t("next")}
                 className="text-white hover:text-cvs-lightBlue transition-colors"
-                aria-label={t('next')}
+                onClick={handleNext}
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                <svg
+                  className="w-6 h-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
                 </svg>
               </button>
             </div>

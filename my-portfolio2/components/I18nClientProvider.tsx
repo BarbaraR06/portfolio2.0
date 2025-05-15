@@ -1,8 +1,9 @@
 // components/I18nClientProvider.tsx
-'use client';
+"use client";
 
-import i18n from '../app/i18n/i18n';
-import { I18nextProvider } from 'react-i18next';
+import { I18nextProvider } from "react-i18next";
+
+import i18n from "../app/i18n/i18n";
 
 export default function I18nClientProvider({
   children,

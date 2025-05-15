@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
+
 import TransitionOverlay from "@/components/TransitionOverlay";
 
 export default function LogoutPage() {
@@ -11,7 +12,7 @@ export default function LogoutPage() {
 
   useEffect(() => {
     // Asegurar que la página sea visible al cargar
-    document.body.style.opacity = '1';
+    document.body.style.opacity = "1";
   }, []);
 
   const handleSignIn = () => {
@@ -27,9 +28,9 @@ export default function LogoutPage() {
       <div className="login-container bg-white/10 backdrop-blur-lg rounded-xl p-8 flex flex-col items-center gap-6 w-[90%] max-w-md fadeIn">
         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#cbbddd]">
           <img
-            src="/pixel.svg"
             alt="Barbara Ruiz"
             className="w-full object-top"
+            src="/pixel.svg"
           />
         </div>
         <div className="text-center">
@@ -37,12 +38,12 @@ export default function LogoutPage() {
           <p className="text-white/80 text-lg">Barbara Ruiz</p>
         </div>
         <button
-          onClick={handleSignIn}
           className="w-full bg-[#cbbddd] hover:bg-white/30 text-defaultText hover:text-white py-2 px-4 rounded-lg transition-colors duration-200 font-bold"
+          onClick={handleSignIn}
         >
           {t("signIn")}
         </button>
       </div>
     </div>
   );
-} 
+}
