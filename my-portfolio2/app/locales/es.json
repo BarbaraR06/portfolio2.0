@@ -41,5 +41,42 @@
         "artist": "Lofi Sol"
       }
     }
+  },
+  "resume": {
+    "title": "Curriculum",
+    "download": "Do you want to download my resume?",
+    "yes": "Yes",
+    "no": "No",
+    "downloaded": "Downloaded"
+    
+  },
+  "work": {
+    "opengrano": {
+      "title": "Desarrolladora Frontend",
+      "company": "Opengrano",
+      "companyLink": "https://www.opengrano.com/",
+      "platform": "Plataforma Web3",
+      "theBadge": "TheBadge",
+      "theBadgeLink": "https://www.thebadge.xyz/",
+      "period": "Diciembre 2023 - presente",
+      "responsibilities": [
+        "Diseño y desarrollo de componentes frontend reutilizables usando React, Next.js, TailwindCSS y TypeScript.",
+        "Configuración de traducciones en múltiples idiomas con i18n.",
+        "Diseño de la interfaz del sitio web en Figma y posterior implementación en el frontend, asegurando la consistencia visual."
+      ]
+    },
+    "fisioahora": {
+      "title": "Desarrolladora Frontend",
+      "company": "FisioAhora",
+      "internship": "Prácticas en",
+      "footalent": "Foo Talent Group",
+      "footalentLink": "https://www.linkedin.com/company/footalentgroup/",
+      "period": "Febrero 2024 - Marzo 2024",
+      "responsibilities": [
+        "Diseño y construcción de componentes y páginas frontend atractivas y funcionales para FisioAhora usando React, TailwindCSS y JavaScript",
+        "Desarrollo de funcionalidad de búsqueda con filtros usando Node.js",
+        "Despliegue y configuración de la aplicación"
+      ]
+    }
   }
 }

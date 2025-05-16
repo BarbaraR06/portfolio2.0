@@ -23,6 +23,7 @@ const iconPaths: Record<string, string> = {
 
 export default function Footer({
   minimizedTabs,
+  
   onRestoreTab,
   iconsInFooter,
   setIsTransitioning,

@@ -15,7 +15,6 @@ export default function ShutdownPage() {
     let lastY = 0;
     let lastShake = 0;
 
-    // Manejo de la transición
     const triggerTransition = () => {
       setIsTransitioning(true);
       setTimeout(() => {

@@ -86,11 +86,13 @@ export default function Modal({
   return (
     <div
       ref={modalRef}
-      className="fixed top-20 left-20 w-[80%] min-h-[50%] max-h-[85vh] lg:w-[50%] bg-white border-4 border-cvs-lightBlue rounded-lg z-30 overflow-hidden"
-      onMouseDown={startDragging}
-      onTouchStart={startTouchDragging}
+      className="fixed top-20 left-20 w-[60%] min-h-[30%] max-h-[90vh] lg:w-[40%] bg-white border-4 border-cvs-lightBlue rounded-lg z-30 overflow-hidden"
     >
-      <div className="w-full h-10 bg-cvs-lightBlue flex justify-between items-center px-4">
+      <div
+        className="w-full h-10 bg-cvs-lightBlue flex justify-between items-center px-4"
+        onMouseDown={startDragging}
+        onTouchStart={startTouchDragging}
+      >
         <h2 className="text-white text-lg font-semibold">{title}</h2>
         <div className="flex space-x-2">
           <button onClick={onMinimize}>

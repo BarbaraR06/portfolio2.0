@@ -17,7 +17,7 @@
     "paragraph3": "I'm currently pursuing a degree in Computer Science Applied to Multimedia and Website Design, which will allow me to continue growing in the field of web development and digital design."
   },
   "shutdown": {
-    "shakeMouse": "Shake mouse to wake up", 
+    "shakeMouse": "Shake mouse to wake up",
     "orClick": "or click to wake up"
   },
   "login": {
@@ -40,6 +40,42 @@
         "title": "Music for a sunny day",
         "artist": "Lofi Sun"
       }
+    }
+  },
+  "resume": {
+    "title": "Resume",
+    "download": "Do you want to download my resume?",
+    "yes": "Yes",
+    "no": "No",
+    "downloaded": "Downloaded"
+  },
+  "work": {
+    "opengrano": {
+      "title": "Frontend Developer",
+      "company": "Opengrano",
+      "companyLink": "https://www.opengrano.com/",
+      "platform": "Web3 Platform",
+      "theBadge": "TheBadge",
+      "theBadgeLink": "https://www.thebadge.xyz/",
+      "period": "December 2023 - present",
+      "responsibilities": [
+        "Design and develop reusable frontend components using React, Next.js, TailwindCSS, and TypeScript.",
+        "Configure translations in multiple languages with i18n.",
+        "Design the website's interface in Figma and then implement it on the frontend, ensuring visual consistency."
+      ]
+    },
+    "fisioahora": {
+      "title": "Frontend Developer",
+      "company": "FisioAhora",
+      "internship": "Internship at",
+      "footalent": "Foo Talent Group",
+      "footalentLink": "https://www.linkedin.com/company/footalentgroup/",
+      "period": "February 2024 - March 2024",
+      "responsibilities": [
+        "Design and build attractive and functional FisioAhora frontend components and pages using React, TailwindCSS, and JavaScript",
+        "Developing search functionality with filters using Node.js",
+        "Deploying and configuring the application deployment"
+      ]
     }
   }
 }

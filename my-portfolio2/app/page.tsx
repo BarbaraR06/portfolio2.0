@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CldImage } from 'next-cloudinary';
 
 import Education from "./education";
 import Email from "./email";
@@ -28,6 +27,7 @@ export default function Home() {
   const [iconsInFooter, setIconsInFooter] = useState<string[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const { t } = useTranslation("home");
+
 
   const handleClick = (key: string) => {
     setSelected((prev) => (prev === key ? null : key));
@@ -68,7 +68,7 @@ export default function Home() {
     AboutMe: <AboutMeModal />,
     Email: <EmailModal />,
     Github: <GithubModal />,
-    Resume: <ResumeModal />,
+    Resume: <ResumeModal isOpen={true} onClose={() => handleCloseTab("Resume")} />,
   };
 
   return (
