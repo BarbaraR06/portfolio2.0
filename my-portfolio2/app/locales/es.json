@@ -44,10 +44,10 @@
   },
   "resume": {
     "title": "Curriculum",
-    "download": "Do you want to download my resume?",
-    "yes": "Yes",
+    "download": "¿Querés descargar mi currículum?",
+    "yes": "Si",
     "no": "No",
-    "downloaded": "Downloaded"
+    "downloaded": "Descargado"
     
   },
   "work": {
