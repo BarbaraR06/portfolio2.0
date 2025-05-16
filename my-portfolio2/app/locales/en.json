@@ -77,5 +77,17 @@
         "Deploying and configuring the application deployment"
       ]
     }
+  },
+  "education": {
+    "computerScience": {
+      "title": "Degree in Computer Science Applied to Multimedia and Website Design",
+      "institution": "Universidad Nacional Del Litoral",
+      "period": "2025-present"
+    },
+    "industrialDesign": {
+      "title": "Bachelor's degree in Industrial Design",
+      "institution": "Universidad Nacional Del Litoral",
+      "period": "2015-present"
+    }
   }
 }

@@ -9,7 +9,7 @@ export default function WorkModal() {
 
   return (
     <div className="text-defaultText font-bold flex flex-col gap-4">
-      <div className="flex flex-col gap-1 border-2 border-cvs-lightBlue rounded-lg p-4 w-[90%] xl2:gap-6">
+      <div className="flex flex-col gap-1 border-2 border-cvs-lightBlue rounded-lg p-4 xl2:gap-6">
         <h3 className="text-cvs-darkBlue text-lg xl2:text-4xl">
           {t("opengrano.title")}
         </h3>
@@ -43,7 +43,7 @@ export default function WorkModal() {
         </ul>
       </div>
 
-      <div className="flex flex-col gap-1 border-2 border-cvs-lightBlue rounded-lg p-4 w-[90%] xl2:gap-6">
+      <div className="flex flex-col gap-1 border-2 border-cvs-lightBlue rounded-lg p-4 xl2:gap-6">
         <h3 className="text-cvs-darkBlue text-lg xl2:text-4xl">
           {t("fisioahora.title")}
         </h3>

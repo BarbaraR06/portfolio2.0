@@ -78,5 +78,17 @@
         "Despliegue y configuración de la aplicación"
       ]
     }
+  },
+  "education": {
+    "computerScience": {
+      "title": "Tecnicatura en Informática Aplicada al Diseño Multimedia y de Sitios Web",
+      "institution": "Universidad Nacional Del Litoral",
+      "period": "2025-presente"
+    },
+    "industrialDesign": {
+      "title": "Licenciatura en Diseño Industrial",
+      "institution": "Universidad Nacional Del Litoral",
+      "period": "2015-presente"
+    }
   }
 }
