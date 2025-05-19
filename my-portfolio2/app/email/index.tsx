@@ -14,7 +14,7 @@ export default function Email() {
         alt="Email Icon"
         className="md:w-32 md:h-32 w-20 h-20"
         src="/mail.svg"
-        onClick={handleEmailClick}
+        onDoubleClick={handleEmailClick}
       />
     </div>
   );
