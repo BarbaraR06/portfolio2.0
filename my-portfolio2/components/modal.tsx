@@ -52,7 +52,7 @@ export default function Modal({
 
       modalRef.current.style.left = `${touch.clientX - offset.x}px`;
       modalRef.current.style.top = `${touch.clientY - offset.y}px`;
-      e.preventDefault(); // Prevenir el scroll mientras se arrastra
+      e.preventDefault(); 
     }
   };
 
@@ -86,7 +86,12 @@ export default function Modal({
   return (
     <div
       ref={modalRef}
-      className="fixed top-20 left-20 w-[60%] min-h-[30%] max-h-[90vh] lg:w-[40%] bg-white border-4 border-cvs-lightBlue rounded-lg z-30 overflow-hidden"
+      className="fixed top-20 left-20 w-[60%] min-h-[30%] max-h-[90vh] lg:w-[40%] bg-white border-4 border-cvs-lightBlue rounded-lg z-30 overflow-hidden
+               data-[state=open]:animate-in data-[state=closed]:animate-out
+               data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
+               data-[state=closed]:slide-out-to-left-1/2 data-[state=open]:slide-in-from-left-1/2
+               duration-300"
+      data-state="open"
     >
       <div
         className="w-full h-10 bg-cvs-lightBlue flex justify-between items-center px-4"

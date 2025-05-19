@@ -14,7 +14,7 @@ export default function Github() {
         alt="Github Icon"
         className="md:w-32 md:h-32 w-20 h-20 "
         src="/github.svg"
-        onClick={handleGithubClick}
+        onDoubleClick={handleGithubClick}
       />
     </div>
   );
