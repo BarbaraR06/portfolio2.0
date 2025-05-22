@@ -9,6 +9,18 @@ const scopes = [
   'playlist-read-private',
 ];
 
+if (!process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID) {
+  throw new Error('NEXT_PUBLIC_SPOTIFY_CLIENT_ID must be defined');
+}
+
+if (!process.env.SPOTIFY_CLIENT_SECRET) {
+  throw new Error('SPOTIFY_CLIENT_SECRET must be defined');
+}
+
+if (!process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI) {
+  throw new Error('NEXT_PUBLIC_SPOTIFY_REDIRECT_URI must be defined');
+}
+
 const spotifyApi = new SpotifyWebApi({
   clientId: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
@@ -17,10 +29,16 @@ const spotifyApi = new SpotifyWebApi({
 
 export const getAuthUrl = () => {
   const state = Math.random().toString(36).substring(7);
+  const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
+  
+  if (!redirectUri) {
+    throw new Error('Redirect URI is not configured');
+  }
+
   return `https://accounts.spotify.com/authorize?client_id=${
     process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID
   }&response_type=code&redirect_uri=${
-    encodeURIComponent(process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI || '')
+    encodeURIComponent(redirectUri)
   }&scope=${encodeURIComponent(scopes.join(' '))}&state=${state}`;
 };
 

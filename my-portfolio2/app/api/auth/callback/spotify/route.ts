@@ -6,24 +6,40 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const REDIRECT_URI = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
+
+if (!BASE_URL) {
+  throw new Error('NEXT_PUBLIC_BASE_URL environment variable is not set');
+}
+
+if (!REDIRECT_URI) {
+  throw new Error('NEXT_PUBLIC_SPOTIFY_REDIRECT_URI environment variable is not set');
+}
 
 const validateRedirectUri = () => {
-  const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
-  if (process.env.NODE_ENV === 'production' && !redirectUri?.startsWith('https://')) {
+  if (!REDIRECT_URI) {
+    throw new Error('Spotify redirect URI is not configured');
+  }
+
+  if (process.env.NODE_ENV === 'production' && !REDIRECT_URI.startsWith('https://')) {
     throw new Error('Redirect URI must use HTTPS in production');
   }
-  return redirectUri;
+
+  spotifyApi.setRedirectURI(REDIRECT_URI);
+  return REDIRECT_URI;
 };
 
 export async function GET(request: Request) {
   try {
-    validateRedirectUri();
+    const redirectUri = validateRedirectUri();
+    console.log('Using redirect URI:', redirectUri); 
 
     const { searchParams } = new URL(request.url);
     const code = searchParams.get('code');
     const error = searchParams.get('error');
 
     if (error) {
+      console.error('Spotify auth error:', error); 
       return NextResponse.redirect(new URL(`/error?error=${error}`, BASE_URL));
     }
 
