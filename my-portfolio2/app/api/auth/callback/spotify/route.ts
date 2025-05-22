@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
 import spotifyApi from '@/utils/spotify';
-
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-const BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://portfolio2-0-ochre-chi.vercel.app'
-  : 'http://localhost:3000';
-
+const BASE_URL = 'https://portfolio2-0-ochre-chi.vercel.app';
 
 const validateRedirectUri = () => {
   const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
@@ -39,14 +37,15 @@ export async function GET(request: Request) {
     response.cookies.set('spotify_access_token', data.body.access_token, {
       maxAge: data.body.expires_in,
       httpOnly: true,
-      secure: true, 
+      secure: true,
       path: '/',
       sameSite: 'lax'
     });
     
     response.cookies.set('spotify_refresh_token', data.body.refresh_token, {
-      maxAge: 30 * 24 * 60 * 60, 
-      secure: true, 
+      maxAge: 30 * 24 * 60 * 60, // 30 days
+      httpOnly: true,
+      secure: true,
       path: '/',
       sameSite: 'lax'
     });
