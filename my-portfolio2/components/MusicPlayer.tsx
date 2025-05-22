@@ -33,6 +33,29 @@ export default function MusicPlayer() {
   const [player, setPlayer] = useState<Spotify.Player | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const getAccessToken = async () => {
+    try {
+      const response = await fetch('/api/spotify/token');
+      const data = await response.json();
+      
+      if (data.error) {
+        console.error('Error getting access token:', data.error);
+        setIsAuthenticated(false);
+        return null;
+      }
+      
+      if (data.access_token) {
+        setAccessToken(data.access_token);
+        setIsAuthenticated(true);
+        return data.access_token;
+      }
+    } catch (error) {
+      console.error('Error fetching access token:', error);
+      setIsAuthenticated(false);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -42,17 +65,12 @@ export default function MusicPlayer() {
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new window.Spotify.Player({
         name: "Portfolio Music Player",
-        getOAuthToken: cb => {
-          fetch('/api/spotify/token')
-            .then(res => res.json())
-            .then(data => {
-              if (data.access_token) {
-                cb(data.access_token);
-                setAccessToken(data.access_token);
-                setIsAuthenticated(true);
-                playYourPlaylist(data.access_token);
-              }
-            });
+        getOAuthToken: async cb => {
+          const token = await getAccessToken();
+          if (token) {
+            cb(token);
+            playYourPlaylist(token);
+          }
         },
       });
 
@@ -79,25 +97,38 @@ export default function MusicPlayer() {
   }, []);
 
   useEffect(() => {
-    if (accessToken) {
-      fetch('/api/spotify/playlists', {
-        headers: {
-          'x-spotify-token': accessToken
-        }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.items) {
-            setPlaylists(data.items);
-          }
-        })
-        .catch(console.error);
-    }
-  }, [accessToken]);
+    const fetchPlaylists = async () => {
+      const token = await getAccessToken();
+      if (!token) return;
 
-  const playYourPlaylist = (token: string) => {
-    if (player) {
-      fetch(`https://api.spotify.com/v1/me/player/play`, {
+      try {
+        const response = await fetch('https://api.spotify.com/v1/me/playlists', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch playlists');
+        }
+        
+        const data = await response.json();
+        if (data.items) {
+          setPlaylists(data.items);
+        }
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
+    };
+
+    fetchPlaylists();
+  }, [isAuthenticated]);
+
+  const playYourPlaylist = async (token: string) => {
+    if (!player) return;
+
+    try {
+      const response = await fetch('https://api.spotify.com/v1/me/player/play', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -106,11 +137,17 @@ export default function MusicPlayer() {
         body: JSON.stringify({
           context_uri: `spotify:playlist:${YOUR_PLAYLIST_ID}`,
         }),
-      }).catch(console.error);
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to start playback');
+      }
+    } catch (error) {
+      console.error('Error starting playback:', error);
     }
   };
 
-  const handlePlayPause = () => {
+  const handlePlayPause = async () => {
     if (!isAuthenticated) {
       window.location.href = getAuthUrl();
       return;
@@ -168,37 +205,22 @@ export default function MusicPlayer() {
       } bg-[#e3b1d2]/70 backdrop-blur-sm`}
       onClick={() => isMinimized && setIsMinimized(false)}
     >
-      {isMinimized ? (
-        <div className="w-full h-full flex items-center justify-center">
-          <img
-            alt={currentTrack?.name || t("no_track")}
-            className="w-full h-full object-cover"
-            src={currentTrack?.album.images[0]?.url || "/music/default-cover.jpg"}
-          />
-        </div>
-      ) : (
+      {!isMinimized && (
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-white font-semibold truncate flex-1">
-              {currentTrack?.name || t("select_playlist")}
+            <h3 className="text-white text-sm font-medium">
+              {currentTrack?.name || t("no_track")}
             </h3>
             <button
-              aria-label={t("minimize")}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMinimized(true);
+              }}
               className="text-white hover:text-cvs-lightBlue transition-colors"
-              onClick={() => setIsMinimized(true)}
+              aria-label={t("minimize")}
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M19 9l-7 7-7-7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                />
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
           </div>
@@ -231,18 +253,23 @@ export default function MusicPlayer() {
           {playlists.length > 0 && (
             <select
               className="w-full mb-4 p-2 rounded bg-white/10 text-white"
-              onChange={(e) => {
-                if (player && accessToken) {
-                  fetch(`https://api.spotify.com/v1/me/player/play`, {
+              onChange={async (e) => {
+                const token = await getAccessToken();
+                if (!token || !player) return;
+
+                try {
+                  await fetch('https://api.spotify.com/v1/me/player/play', {
                     method: 'PUT',
                     headers: {
-                      'Authorization': `Bearer ${accessToken}`,
+                      'Authorization': `Bearer ${token}`,
                       'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                       context_uri: `spotify:playlist:${e.target.value}`,
                     }),
-                  }).catch(console.error);
+                  });
+                } catch (error) {
+                  console.error('Error changing playlist:', error);
                 }
               }}
             >
@@ -255,46 +282,35 @@ export default function MusicPlayer() {
             </select>
           )}
 
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <span className="text-white text-xs">
-                {formatTime(currentTime)}
-              </span>
-              <input
-                className="flex-1 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
-                max={duration}
-                min={0}
-                type="range"
-                value={currentTime}
-                onChange={handleTimeSeek}
-              />
-              <span className="text-white text-xs">{formatTime(duration)}</span>
-            </div>
+          <div className="flex items-center justify-center space-x-4">
+            <button
+              className="text-white hover:text-cvs-lightBlue transition-colors"
+              onClick={handlePlayPause}
+            >
+              {isPlaying ? (
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+              ) : (
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              )}
+            </button>
+          </div>
 
-            <div className="flex justify-center items-center space-x-4">
-              <button
-                aria-label={isPlaying ? t("pause") : t("play")}
-                className="text-white hover:text-cvs-lightBlue transition-colors"
-                onClick={handlePlayPause}
-              >
-                {isPlaying ? (
-                  <svg
-                    className="w-8 h-8"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-8 h-8"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                )}
-              </button>
+          <div className="mt-4">
+            <input
+              type="range"
+              min={0}
+              max={duration}
+              value={currentTime}
+              onChange={handleTimeSeek}
+              className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
+            />
+            <div className="flex justify-between text-xs text-white mt-1">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
             </div>
           </div>
         </div>
