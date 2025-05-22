@@ -35,20 +35,23 @@ export async function GET(request: Request) {
     
     const response = NextResponse.redirect(new URL('/', BASE_URL));
     
-    response.cookies.set('spotify_access_token', data.body.access_token, {
-      maxAge: data.body.expires_in,
+    // Set domain for cookies in production
+    const cookieOptions = {
       httpOnly: true,
       secure: true,
       path: '/',
-      sameSite: 'lax'
+      sameSite: 'lax' as const,
+      domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : undefined
+    };
+    
+    response.cookies.set('spotify_access_token', data.body.access_token, {
+      ...cookieOptions,
+      maxAge: data.body.expires_in
     });
     
     response.cookies.set('spotify_refresh_token', data.body.refresh_token, {
-      maxAge: 30 * 24 * 60 * 60,
-      httpOnly: true,
-      secure: true,
-      path: '/',
-      sameSite: 'lax'
+      ...cookieOptions,
+      maxAge: 30 * 24 * 60 * 60 // 30 days
     });
 
     return response;
