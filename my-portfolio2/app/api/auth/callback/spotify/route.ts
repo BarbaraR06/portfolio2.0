@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import spotifyApi from '@/utils/spotify';
 
+export const dynamic = 'force-dynamic';
+
+const PORTFOLIO_URL = 'https://portfolio2-0.vercel.app';
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -8,33 +12,38 @@ export async function GET(request: Request) {
     const error = searchParams.get('error');
 
     if (error) {
-      return NextResponse.redirect('/error?error=' + error);
+      return NextResponse.redirect(`${PORTFOLIO_URL}/error?error=${error}`);
     }
 
     if (!code) {
-      return NextResponse.redirect('/error?error=no_code');
+      return NextResponse.redirect(`${PORTFOLIO_URL}/error?error=no_code`);
     }
 
     const data = await spotifyApi.authorizationCodeGrant(code);
     
-  
-    const response = NextResponse.redirect('/');
+    // Create a response with the tokens
+    const response = NextResponse.redirect(PORTFOLIO_URL);
     
+    // Set cookies with the tokens
     response.cookies.set('spotify_access_token', data.body.access_token, {
       maxAge: data.body.expires_in,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
+      path: '/',
+      sameSite: 'lax'
     });
     
     response.cookies.set('spotify_refresh_token', data.body.refresh_token, {
-      maxAge: 30 * 24 * 60 * 60, 
+      maxAge: 30 * 24 * 60 * 60, // 30 days
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
+      path: '/',
+      sameSite: 'lax'
     });
 
     return response;
   } catch (error) {
     console.error('Error in Spotify callback:', error);
-    return NextResponse.redirect('/error?error=auth_failed');
+    return NextResponse.redirect(`${PORTFOLIO_URL}/error?error=auth_failed`);
   }
 } 
