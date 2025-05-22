@@ -10,15 +10,33 @@ export async function GET(request: Request) {
     const accessToken = request.headers.get('x-spotify-token');
     
     if (!accessToken) {
-      return NextResponse.json({ error: 'No access token provided' }, { status: 401 });
+      return new NextResponse(
+        JSON.stringify({ error: 'No access token provided' }),
+        { 
+          status: 401,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     spotifyApi.setAccessToken(accessToken);
     const data = await spotifyApi.getUserPlaylists();
     
-    return NextResponse.json(data.body);
+    return new NextResponse(
+      JSON.stringify(data.body),
+      { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
   } catch (error) {
     console.error('Error fetching playlists:', error);
-    return NextResponse.json({ error: 'Failed to fetch playlists' }, { status: 500 });
+    return new NextResponse(
+      JSON.stringify({ error: 'Failed to fetch playlists' }),
+      { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
   }
 } 
