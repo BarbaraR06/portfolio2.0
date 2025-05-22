@@ -147,10 +147,6 @@ export default function MusicPlayer() {
     }
   };
 
-  const handleAuth = () => {
-    window.location.href = '/api/auth/spotify';
-  };
-
   const handlePlayPause = async () => {
     if (!isAuthenticated) {
       window.location.href = getAuthUrl();
@@ -189,7 +185,7 @@ export default function MusicPlayer() {
       <div className="fixed bottom-16 right-4 z-30 bg-[#e3b1d2]/70 backdrop-blur-sm p-4 rounded-lg">
         <button
           className="text-white hover:text-cvs-lightBlue transition-colors flex items-center gap-2"
-          onClick={handleAuth}
+          onClick={() => window.location.href = getAuthUrl()}
         >
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-11v4l3-2-3-2z"/>
