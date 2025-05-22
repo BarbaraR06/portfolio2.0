@@ -1,120 +1,165 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { getAuthUrl } from "@/utils/spotify";
 
-interface Song {
-  id: string;
-  file: string;
-  cover?: string;
+// Reemplaza esto con el ID de tu playlist
+const YOUR_PLAYLIST_ID = '6zCID88oNjNv9zx6puDHKj';
+
+interface SpotifyTrack {
+  id: string | null;
+  name: string;
+  artists: { name: string }[];
+  album: {
+    images: { url: string }[];
+  };
 }
 
-// Cloudinary URL helper
-const getCloudinaryUrl = (publicId: string) => {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  return `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}`;
-};
-
-const playlist: Song[] = [
-  {
-    id: "rainy",
-    file: "https://res.cloudinary.com/dgft27lky/video/upload/v1747316493/portfolio/rainy.mp3",
-    cover: "/music/cover.jpg",
-  },
-  {
-    id: "sunny",
-    file: "https://res.cloudinary.com/dgft27lky/video/upload/v1747316668/portfolio/sunny.mp3",
-    cover: "/music/cover2.jpg",
-  },
-];
+interface SpotifyPlaylist {
+  id: string;
+  name: string;
+  images: { url: string }[];
+}
 
 export default function MusicPlayer() {
   const { t } = useTranslation("music-player");
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.5);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [playlists, setPlaylists] = useState<SpotifyPlaylist[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<SpotifyTrack | null>(null);
+  const [player, setPlayer] = useState<Spotify.Player | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.addEventListener("error", (e) => {
-        console.error("Error loading audio:", e);
-        // Log more detailed error information
-        const audio = audioRef.current;
-        if (audio) {
-          console.error("Audio error details:", {
-            error: audio.error,
-            networkState: audio.networkState,
-            readyState: audio.readyState,
-            currentSrc: audio.currentSrc
-          });
+    const script = document.createElement("script");
+    script.src = "https://sdk.scdn.co/spotify-player.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const player = new window.Spotify.Player({
+        name: "Portfolio Music Player",
+        getOAuthToken: cb => {
+          fetch('/api/spotify/token')
+            .then(res => res.json())
+            .then(data => {
+              if (data.access_token) {
+                cb(data.access_token);
+                setAccessToken(data.access_token);
+                setIsAuthenticated(true);
+                // Reproducir tu playlist automáticamente después de autenticarse
+                playYourPlaylist(data.access_token);
+              }
+            });
+        },
+      });
+
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Ready with Device ID', device_id);
+      });
+
+      player.addListener('player_state_changed', state => {
+        if (state) {
+          setIsPlaying(!state.paused);
+          setCurrentTrack(state.track_window.current_track);
+          setDuration(state.duration);
+          setCurrentTime(state.position);
         }
       });
-    }
+
+      player.connect();
+      setPlayer(player);
+    };
+
+    return () => {
+      player?.disconnect();
+    };
   }, []);
 
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-      setDuration(audioRef.current.duration);
+  useEffect(() => {
+    if (accessToken) {
+      fetch('/api/spotify/playlists', {
+        headers: {
+          'x-spotify-token': accessToken
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.items) {
+            setPlaylists(data.items);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [accessToken]);
+
+  const playYourPlaylist = (token: string) => {
+    if (player) {
+      fetch(`https://api.spotify.com/v1/me/player/play`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          context_uri: `spotify:playlist:${YOUR_PLAYLIST_ID}`,
+        }),
+      }).catch(console.error);
     }
   };
 
   const handlePlayPause = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch((error) => {
-          console.error("Error al reproducir:", error);
-        });
-      }
-      setIsPlaying(!isPlaying);
+    if (!isAuthenticated) {
+      window.location.href = getAuthUrl();
+      return;
     }
-  };
 
-  const handlePrevious = () => {
-    setCurrentSongIndex((prevIndex) =>
-      prevIndex === 0 ? playlist.length - 1 : prevIndex - 1,
-    );
-    setIsPlaying(true);
-  };
-
-  const handleNext = () => {
-    setCurrentSongIndex((prevIndex) =>
-      prevIndex === playlist.length - 1 ? 0 : prevIndex + 1,
-    );
-    setIsPlaying(true);
+    if (player) {
+      player.togglePlay();
+    }
   };
 
   const handleTimeSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = parseFloat(e.target.value);
-
-    if (audioRef.current) {
-      audioRef.current.currentTime = time;
+    if (player) {
+      player.seek(time);
       setCurrentTime(time);
     }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
-
     setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
+    if (player) {
+      player.setVolume(newVolume);
     }
   };
 
   const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-
+    const minutes = Math.floor(time / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  const currentSong = playlist[currentSongIndex];
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed bottom-16 right-4 z-30 bg-[#e3b1d2]/70 backdrop-blur-sm p-4 rounded-lg">
+        <button
+          className="text-white hover:text-cvs-lightBlue transition-colors flex items-center gap-2"
+          onClick={() => window.location.href = getAuthUrl()}
+        >
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-11v4l3-2-3-2z"/>
+          </svg>
+          {t("connect_spotify")}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -125,27 +170,19 @@ export default function MusicPlayer() {
       } bg-[#e3b1d2]/70 backdrop-blur-sm`}
       onClick={() => isMinimized && setIsMinimized(false)}
     >
-      <audio
-        ref={audioRef}
-        autoPlay={isPlaying}
-        src={currentSong.file}
-        onEnded={handleNext}
-        onTimeUpdate={handleTimeUpdate}
-      />
-
       {isMinimized ? (
-        <div className=" w-full h-full flex items-center justify-center">
+        <div className="w-full h-full flex items-center justify-center">
           <img
-            alt={t(`songs.${currentSong.id}.title`)}
+            alt={currentTrack?.name || t("no_track")}
             className="w-full h-full object-cover"
-            src={currentSong.cover || "/music/default-cover.jpg"}
+            src={currentTrack?.album.images[0]?.url || "/music/default-cover.jpg"}
           />
         </div>
       ) : (
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-white font-semibold truncate flex-1">
-              {t(`songs.${currentSong.id}.title`)}
+              {currentTrack?.name || t("select_playlist")}
             </h3>
             <button
               aria-label={t("minimize")}
@@ -170,13 +207,13 @@ export default function MusicPlayer() {
 
           <div className="flex items-center mb-4">
             <img
-              alt={t(`songs.${currentSong.id}.title`)}
+              alt={currentTrack?.name || t("no_track")}
               className="w-16 h-16 rounded-md mr-3"
-              src={currentSong.cover || "/music/cover.jpg"}
+              src={currentTrack?.album.images[0]?.url || "/music/default-cover.jpg"}
             />
             <div>
               <p className="text-white text-sm">
-                {t(`songs.${currentSong.id}.artist`)}
+                {currentTrack?.artists.map(a => a.name).join(", ") || t("no_artist")}
               </p>
               <div className="flex items-center mt-2">
                 <input
@@ -193,6 +230,33 @@ export default function MusicPlayer() {
             </div>
           </div>
 
+          {playlists.length > 0 && (
+            <select
+              className="w-full mb-4 p-2 rounded bg-white/10 text-white"
+              onChange={(e) => {
+                if (player && accessToken) {
+                  fetch(`https://api.spotify.com/v1/me/player/play`, {
+                    method: 'PUT',
+                    headers: {
+                      'Authorization': `Bearer ${accessToken}`,
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      context_uri: `spotify:playlist:${e.target.value}`,
+                    }),
+                  }).catch(console.error);
+                }
+              }}
+            >
+              <option value="">{t("select_playlist")}</option>
+              {playlists.map(playlist => (
+                <option key={playlist.id} value={playlist.id}>
+                  {playlist.name}
+                </option>
+              ))}
+            </select>
+          )}
+
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
               <span className="text-white text-xs">
@@ -200,7 +264,7 @@ export default function MusicPlayer() {
               </span>
               <input
                 className="flex-1 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
-                max={duration || 0}
+                max={duration}
                 min={0}
                 type="range"
                 value={currentTime}
@@ -210,19 +274,6 @@ export default function MusicPlayer() {
             </div>
 
             <div className="flex justify-center items-center space-x-4">
-              <button
-                aria-label={t("previous")}
-                className="text-white hover:text-cvs-lightBlue transition-colors"
-                onClick={handlePrevious}
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
-                </svg>
-              </button>
               <button
                 aria-label={isPlaying ? t("pause") : t("play")}
                 className="text-white hover:text-cvs-lightBlue transition-colors"
@@ -245,19 +296,6 @@ export default function MusicPlayer() {
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 )}
-              </button>
-              <button
-                aria-label={t("next")}
-                className="text-white hover:text-cvs-lightBlue transition-colors"
-                onClick={handleNext}
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-                </svg>
               </button>
             </div>
           </div>

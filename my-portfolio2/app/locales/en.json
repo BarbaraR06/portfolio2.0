@@ -31,16 +31,10 @@
     "next": "Next song",
     "play": "Play",
     "pause": "Pause",
-    "songs": {
-      "rainy": {
-        "title": "Music for a rainy day",
-        "artist": "Lofi Rain"
-      },
-      "sunny": {
-        "title": "Music for a sunny day",
-        "artist": "Lofi Sun"
-      }
-    }
+    "no_track": "No track selected",
+    "no_artist": "No artist",
+    "select_playlist": "Select a playlist",
+    "connect_spotify": "Connect with Spotify"
   },
   "resume": {
     "title": "Resume",

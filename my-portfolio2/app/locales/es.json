@@ -31,16 +31,10 @@
     "next": "Siguiente canción",
     "play": "Reproducir",
     "pause": "Pausar",
-    "songs": {
-      "rainy": {
-        "title": "Música para un día lluvioso",
-        "artist": "Lofi Lluvia"
-      },
-      "sunny": {
-        "title": "Música para un día soleado",
-        "artist": "Lofi Sol"
-      }
-    }
+    "no_track": "No hay canción seleccionada",
+    "no_artist": "No hay artista",
+    "select_playlist": "Selecciona una playlist",
+    "connect_spotify": "Conectar con Spotify"
   },
   "resume": {
     "title": "Curriculum",
@@ -48,7 +42,6 @@
     "yes": "Si",
     "no": "No",
     "downloaded": "Descargado"
-    
   },
   "work": {
     "opengrano": {

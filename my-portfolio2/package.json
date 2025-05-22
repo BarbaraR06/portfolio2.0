@@ -11,6 +11,8 @@
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@heroui/system": "^2.4.15",
+    "@types/spotify-web-api-node": "^5.0.11",
+    "@types/spotify-web-playback-sdk": "^0.1.19",
     "cloudinary-react": "^1.8.1",
     "clsx": "^2.0.0",
     "i18next": "^23.5.1",
@@ -19,7 +21,8 @@
     "next-themes": "^0.2.1",
     "react": "^18",
     "react-dom": "^18",
-    "react-i18next": "^13.2.2"
+    "react-i18next": "^13.2.2",
+    "spotify-web-api-node": "^5.0.2"
   },
   "devDependencies": {
     "@types/node": "^20",
