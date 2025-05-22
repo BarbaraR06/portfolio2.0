@@ -22,6 +22,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get('code');
     const error = searchParams.get('error');
+    const state = searchParams.get('state');
 
     if (error) {
       return NextResponse.redirect(new URL(`/error?error=${error}`, BASE_URL));
@@ -35,13 +36,22 @@ export async function GET(request: Request) {
     
     const response = NextResponse.redirect(new URL('/', BASE_URL));
     
-    // Set domain for cookies in production
+    // Get the domain from BASE_URL for production
+    let domain;
+    if (process.env.NODE_ENV === 'production') {
+      try {
+        domain = new URL(BASE_URL || '').hostname;
+      } catch (e) {
+        console.error('Error parsing BASE_URL:', e);
+      }
+    }
+    
     const cookieOptions = {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       path: '/',
       sameSite: 'lax' as const,
-      domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : undefined
+      domain: domain
     };
     
     response.cookies.set('spotify_access_token', data.body.access_token, {

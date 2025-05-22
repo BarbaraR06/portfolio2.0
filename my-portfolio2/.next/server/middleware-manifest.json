@@ -1,26 +1,6 @@
 {
   "sortedMiddleware": [],
   "middleware": {},
-  "functions": {
-    "/api/auth/spotify/route": {
-      "files": [
-        "server/middleware-build-manifest.js",
-        "server/middleware-react-loadable-manifest.js",
-        "server/next-font-manifest.js",
-        "server/edge-runtime-webpack.js",
-        "server/app/api/auth/spotify/route.js"
-      ],
-      "name": "app/api/auth/spotify/route",
-      "page": "/api/auth/spotify/route",
-      "matchers": [
-        {
-          "regexp": "^/api/auth/spotify$",
-          "originalSource": "/api/auth/spotify"
-        }
-      ],
-      "wasm": [],
-      "assets": []
-    }
-  },
+  "functions": {},
   "version": 2
 }
