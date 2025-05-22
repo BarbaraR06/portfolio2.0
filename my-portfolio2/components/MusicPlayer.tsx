@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getAuthUrl } from "@/utils/spotify";
 
-// Reemplaza esto con el ID de tu playlist
 const YOUR_PLAYLIST_ID = '6zCID88oNjNv9zx6puDHKj';
 
 interface SpotifyTrack {
@@ -51,7 +50,6 @@ export default function MusicPlayer() {
                 cb(data.access_token);
                 setAccessToken(data.access_token);
                 setIsAuthenticated(true);
-                // Reproducir tu playlist automáticamente después de autenticarse
                 playYourPlaylist(data.access_token);
               }
             });

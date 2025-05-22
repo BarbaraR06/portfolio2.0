@@ -12,12 +12,10 @@ export async function GET() {
   }
 
   try {
-    // If access token exists, return it
     if (accessToken) {
       return NextResponse.json({ access_token: accessToken.value });
     }
 
-    // If only refresh token exists, get new access token
     if (refreshToken) {
       const data = await refreshAccessToken(refreshToken.value);
       return NextResponse.json({ access_token: data.access_token });
