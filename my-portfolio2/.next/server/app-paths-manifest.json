@@ -1,3 +1,9 @@
 {
-  "/page": "app/page.js"
+  "/api/spotify/playlists/route": "app/api/spotify/playlists/route.js",
+  "/api/auth/callback/spotify/route": "app/api/auth/callback/spotify/route.js",
+  "/_not-found": "app/_not-found.js",
+  "/page": "app/page.js",
+  "/logout/page": "app/logout/page.js",
+  "/shutdown/page": "app/shutdown/page.js",
+  "/api/spotify/token/route": "app/api/spotify/token/route.js"
 }

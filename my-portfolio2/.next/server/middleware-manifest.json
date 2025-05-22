@@ -1,6 +1,47 @@
 {
   "sortedMiddleware": [],
   "middleware": {},
-  "functions": {},
+  "functions": {
+    "/api/spotify/playlists/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "prerender-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/app/api/spotify/playlists/route.js"
+      ],
+      "name": "app/api/spotify/playlists/route",
+      "page": "/api/spotify/playlists/route",
+      "matchers": [
+        {
+          "regexp": "^/api/spotify/playlists$",
+          "originalSource": "/api/spotify/playlists"
+        }
+      ],
+      "wasm": [],
+      "assets": []
+    },
+    "/api/auth/callback/spotify/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "prerender-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/app/api/auth/callback/spotify/route.js"
+      ],
+      "name": "app/api/auth/callback/spotify/route",
+      "page": "/api/auth/callback/spotify/route",
+      "matchers": [
+        {
+          "regexp": "^/api/auth/callback/spotify$",
+          "originalSource": "/api/auth/callback/spotify"
+        }
+      ],
+      "wasm": [],
+      "assets": []
+    }
+  },
   "version": 2
 }
