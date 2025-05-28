@@ -7,7 +7,6 @@ export async function GET(request: Request) {
   const state = searchParams.get('state');
   const error = searchParams.get('error');
 
-  // Get stored state from cookies using Next.js API
   const storedState = cookies().get('spotify_auth_state')?.value;
 
   console.log('[Spotify Callback] Received callback with:', {
@@ -27,7 +26,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'No code provided' }, { status: 400 });
   }
 
-  // Verify state parameter
   console.log('[Spotify Callback] Verifying state:', {
     received: state,
     stored: storedState
@@ -74,34 +72,33 @@ export async function GET(request: Request) {
 
     console.log('[Spotify Callback] Successfully obtained tokens');
 
-    // Create response with redirect using environment variable
+
     const redirectUrl = new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://portfolio2-0-ochre-chi.vercel.app');
     const redirectResponse = NextResponse.redirect(redirectUrl);
 
-    // Clear the state cookie
+  
     redirectResponse.cookies.set('spotify_auth_state', '', {
       path: '/',
       maxAge: 0
     });
 
-    // Set tokens in response headers
     redirectResponse.cookies.set('spotify_access_token', data.access_token, {
-      httpOnly: true, // Prevent JavaScript access
-      secure: process.env.NODE_ENV === 'production', // Require HTTPS in production
-      sameSite: 'lax', // Protect against CSRF
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'lax', 
       path: '/',
       maxAge: data.expires_in
     });
 
     redirectResponse.cookies.set('spotify_refresh_token', data.refresh_token, {
-      httpOnly: true, // Prevent JavaScript access
-      secure: process.env.NODE_ENV === 'production', // Require HTTPS in production
-      sameSite: 'lax', // Protect against CSRF
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'lax',
       path: '/',
-      maxAge: 30 * 24 * 60 * 60 // 30 days
+      maxAge: 30 * 24 * 60 * 60 
     });
 
-    // Log the response headers
+  
     console.log('[Spotify Callback] Response headers:', {
       location: redirectResponse.headers.get('location'),
       setCookie: redirectResponse.headers.get('set-cookie')

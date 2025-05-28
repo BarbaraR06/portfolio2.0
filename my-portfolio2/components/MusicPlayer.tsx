@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const SPOTIFY_PLAYER_NAME = "Portfolio Web Player";
-const PLAYLIST_URI = "spotify:playlist:1u4F50HA53L3Jwxbnk9IeO"; // Peaceful Piano playlist
+const PLAYLIST_URI = "spotify:playlist:1u4F50HA53L3Jwxbnk9IeO"; 
 
 export default function MusicPlayer() {
   const { t } = useTranslation("music-player");
@@ -18,7 +18,6 @@ export default function MusicPlayer() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
 
-  // Check authentication
   useEffect(() => {
     if (typeof window === "undefined") return;
     

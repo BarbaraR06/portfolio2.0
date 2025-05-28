@@ -31,7 +31,7 @@ export async function POST() {
       throw new Error(data.error_description || 'Failed to refresh token');
     }
 
-    // Update access token cookie
+
     cookieStore.set('spotify_access_token', data.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -39,13 +39,13 @@ export async function POST() {
       maxAge: data.expires_in,
     });
 
-    // If a new refresh token is provided, update it
+  
     if (data.refresh_token) {
       cookieStore.set('spotify_refresh_token', data.refresh_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        maxAge: 30 * 24 * 60 * 60, // 30 days
+        maxAge: 30 * 24 * 60 * 60, 
       });
     }
 

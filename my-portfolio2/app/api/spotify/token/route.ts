@@ -4,7 +4,6 @@ const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
 export async function GET(request: Request) {
-  // Get cookies from request headers
   const cookieHeader = request.headers.get('cookie') || '';
   const cookies = Object.fromEntries(
     cookieHeader.split('; ').map(cookie => {
@@ -30,13 +29,11 @@ export async function GET(request: Request) {
   }
 
   try {
-    // If no refresh token, return current access token
     if (!refreshToken) {
       console.log('[Spotify Token] No refresh token, returning current access token');
       return NextResponse.json({ access_token: accessToken });
     }
 
-    // Try to refresh the token
     console.log('[Spotify Token] Attempting to refresh token');
     const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
@@ -63,13 +60,11 @@ export async function GET(request: Request) {
 
     console.log('[Spotify Token] Token refreshed successfully');
 
-    // Create response
     const jsonResponse = NextResponse.json({ access_token: data.access_token });
 
-    // Update cookies with new tokens
     jsonResponse.cookies.set('spotify_access_token', data.access_token, {
-      httpOnly: false, // Allow JavaScript access
-      secure: false, // Allow non-HTTPS in development
+      httpOnly: false, 
+      secure: false, 
       sameSite: 'lax',
       path: '/',
       maxAge: data.expires_in
@@ -77,11 +72,11 @@ export async function GET(request: Request) {
 
     if (data.refresh_token) {
       jsonResponse.cookies.set('spotify_refresh_token', data.refresh_token, {
-        httpOnly: false, // Allow JavaScript access
-        secure: false, // Allow non-HTTPS in development
+        httpOnly: false,
+        secure: false, 
         sameSite: 'lax',
         path: '/',
-        maxAge: 30 * 24 * 60 * 60 // 30 days
+        maxAge: 30 * 24 * 60 * 60 
       });
     }
 
