@@ -1,13 +1,11 @@
 {
-  "name": "my-portfolio",
+  "name": "my-portfolio2",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "react-scripts build",
-    "start": "HOST=127.0.0.1 react-scripts start",
-    "dev:https": "set USE_HTTPS=true&&next dev",
-    "type": "module",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -28,8 +26,8 @@
     "react-dom": "^18",
     "react-i18next": "^13.2.2",
     "spotify-web-api-node": "^5.0.2",
-    "utf-8-validate": "^6.0.5",
-    "spotify-web-api-js": "^1.5.2"
+    "spotify-web-api-js": "^1.5.2",
+    "utf-8-validate": "^6.0.5"
   },
   "devDependencies": {
     "@types/node": "^20",
