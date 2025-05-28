@@ -1,4 +1,5 @@
 {
   "/page": "app/page.js",
-  "/api/spotify/token/route": "app/api/spotify/token/route.js"
+  "/api/spotify/token/route": "app/api/spotify/token/route.js",
+  "/api/spotify/login/route": "app/api/spotify/login/route.js"
 }
