@@ -74,8 +74,8 @@ export async function GET(request: Request) {
 
     console.log('[Spotify Callback] Successfully obtained tokens');
 
-    // Create response with redirect to Vercel deployment
-    const redirectUrl = new URL('https://portfolio2-0-ochre-chi.vercel.app/player');
+    // Create response with redirect using environment variable
+    const redirectUrl = new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://portfolio2-0-ochre-chi.vercel.app');
     const redirectResponse = NextResponse.redirect(redirectUrl);
 
     // Clear the state cookie
