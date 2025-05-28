@@ -37,4 +37,3 @@ next-env.d.ts
 # Large media files
 public/music/*.mp3
 public/music/*.mp4
-node_modules
