@@ -30,17 +30,10 @@
     "previous": "Canción anterior",
     "next": "Siguiente canción",
     "play": "Reproducir",
-    "pause": "Pausar",
-    "songs": {
-      "rainy": {
-        "title": "Música para un día lluvioso",
-        "artist": "Lofi Lluvia"
-      },
-      "sunny": {
-        "title": "Música para un día soleado",
-        "artist": "Lofi Sol"
-      }
-    }
+    "pause": "Pausar", 
+    "login_with_spotify": "Iniciar sesión con Spotify",
+    "login_spotify": "Iniciar sesión",
+    "loading": "Cargando..."
   },
   "resume": {
     "title": "Curriculum",

@@ -215,7 +215,7 @@ export default function MusicPlayer() {
     }
   };
 
-  if (loading) return <div className="fixed bottom-16 right-4 w-72 rounded-lg bg-[#e3b1d2] p-4">Loading...</div>;
+  if (loading) return <div className="fixed bottom-16 right-4 w-72 rounded-lg bg-[#e3b1d2] p-4">{t("loading")}</div>;
 
   if (!isAuthenticated) {
     return (
