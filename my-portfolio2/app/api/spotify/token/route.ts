@@ -1,53 +1,93 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { refreshAccessToken } from '@/utils/spotify';
 
-export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Get cookies from request headers
+  const cookieHeader = request.headers.get('cookie') || '';
+  const cookies = Object.fromEntries(
+    cookieHeader.split('; ').map(cookie => {
+      const [name, value] = cookie.split('=');
+      return [name, value];
+    })
+  );
+
+  const accessToken = cookies['spotify_access_token'];
+  const refreshToken = cookies['spotify_refresh_token'];
+
+  console.log('[Spotify Token] Checking tokens:', {
+    hasAccessToken: !!accessToken,
+    hasRefreshToken: !!refreshToken,
+    clientId: client_id ? 'present' : 'missing',
+    clientSecret: client_secret ? 'present' : 'missing',
+    allCookies: Object.keys(cookies)
+  });
+
+  if (!accessToken) {
+    console.log('[Spotify Token] No access token found');
+    return NextResponse.json({ error: 'No access token' }, { status: 401 });
+  }
+
   try {
-    const cookieStore = cookies();
-    const accessToken = cookieStore.get('spotify_access_token');
-    const refreshToken = cookieStore.get('spotify_refresh_token');
-
-    if (!accessToken && !refreshToken) {
-      console.error('No tokens found in cookies');
-      return NextResponse.json({ error: 'No tokens found' }, { status: 401 });
+    // If no refresh token, return current access token
+    if (!refreshToken) {
+      console.log('[Spotify Token] No refresh token, returning current access token');
+      return NextResponse.json({ access_token: accessToken });
     }
 
-    // If we have an access token, return it
-    if (accessToken?.value) {
-      return NextResponse.json({ access_token: accessToken.value });
+    // Try to refresh the token
+    console.log('[Spotify Token] Attempting to refresh token');
+    const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${Buffer.from(`${client_id}:${client_secret}`).toString('base64')}`,
+      },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+      }),
+    });
+
+    const data = await tokenResponse.json();
+
+    if (!tokenResponse.ok) {
+      console.error('[Spotify Token] Error refreshing token:', {
+        status: tokenResponse.status,
+        statusText: tokenResponse.statusText,
+        error: data
+      });
+      throw new Error(data.error_description || 'Failed to refresh token');
     }
 
-    // If we only have a refresh token, try to get a new access token
-    if (refreshToken?.value) {
-      try {
-        const data = await refreshAccessToken(refreshToken.value);
-        
-        // Set the new access token in cookies
-        const response = NextResponse.json({ access_token: data.access_token });
-        response.cookies.set('spotify_access_token', data.access_token, {
-          httpOnly: true,
-          secure: true,
-          path: '/',
-          sameSite: 'lax',
-          domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : undefined,
-          maxAge: 3600 // 1 hour
-        });
-        
-        return response;
-      } catch (refreshError) {
-        console.error('Error refreshing token:', refreshError);
-        return NextResponse.json({ error: 'Failed to refresh token' }, { status: 401 });
-      }
+    console.log('[Spotify Token] Token refreshed successfully');
+
+    // Create response
+    const jsonResponse = NextResponse.json({ access_token: data.access_token });
+
+    // Update cookies with new tokens
+    jsonResponse.cookies.set('spotify_access_token', data.access_token, {
+      httpOnly: false, // Allow JavaScript access
+      secure: false, // Allow non-HTTPS in development
+      sameSite: 'lax',
+      path: '/',
+      maxAge: data.expires_in
+    });
+
+    if (data.refresh_token) {
+      jsonResponse.cookies.set('spotify_refresh_token', data.refresh_token, {
+        httpOnly: false, // Allow JavaScript access
+        secure: false, // Allow non-HTTPS in development
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 30 * 24 * 60 * 60 // 30 days
+      });
     }
 
-    return NextResponse.json({ error: 'No valid tokens available' }, { status: 401 });
+    return jsonResponse;
   } catch (error) {
-    console.error('Error in token endpoint:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[Spotify Token] Error in token endpoint:', error);
+    return NextResponse.json({ error: 'Error refreshing token' }, { status: 401 });
   }
 } 

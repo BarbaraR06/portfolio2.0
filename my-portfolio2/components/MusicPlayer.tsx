@@ -2,241 +2,288 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const YOUR_PLAYLIST_ID = '6zCID88oNjNv9zx6puDHKj';
-
-interface SpotifyTrack {
-  id: string | null;
-  name: string;
-  artists: { name: string }[];
-  album: {
-    images: { url: string }[];
-  };
-}
-
-interface SpotifyPlaylist {
-  id: string;
-  name: string;
-  images: { url: string }[];
-}
+const SPOTIFY_PLAYER_NAME = "Portfolio Web Player";
+const PLAYLIST_URI = "spotify:playlist:1u4F50HA53L3Jwxbnk9IeO"; // Peaceful Piano playlist
 
 export default function MusicPlayer() {
   const { t } = useTranslation("music-player");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.5);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [playlists, setPlaylists] = useState<SpotifyPlaylist[]>([]);
-  const [currentTrack, setCurrentTrack] = useState<SpotifyTrack | null>(null);
-  const [player, setPlayer] = useState<Spotify.Player | null>(null);
+  const [player, setPlayer] = useState<any>(null);
+  const [deviceId, setDeviceId] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<any>(null);
 
-  const getAccessToken = async () => {
-    try {
-      const response = await fetch('/api/spotify/token');
-      const data = await response.json();
-      
-      if (data.error) {
-        console.error('Error getting access token:', data.error);
-        setIsAuthenticated(false);
-        return null;
-      }
-      
-      if (data.access_token) {
-        setAccessToken(data.access_token);
-        setIsAuthenticated(true);
-        return data.access_token;
-      }
-    } catch (error) {
-      console.error('Error fetching access token:', error);
-      setIsAuthenticated(false);
-      return null;
-    }
-  };
-
+  // Check authentication
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const player = new window.Spotify.Player({
-        name: "Portfolio Music Player",
-        getOAuthToken: async cb => {
-          const token = await getAccessToken();
-          if (token) {
-            cb(token);
-            playYourPlaylist(token);
-          }
-        },
-      });
-
-      player.addListener('ready', ({ device_id }) => {
-        console.log('Ready with Device ID', device_id);
-      });
-
-      player.addListener('player_state_changed', state => {
-        if (state) {
-          setIsPlaying(!state.paused);
-          setCurrentTrack(state.track_window.current_track);
-          setDuration(state.duration);
-          setCurrentTime(state.position);
-        }
-      });
-
-      player.connect();
-      setPlayer(player);
-    };
-
-    return () => {
-      player?.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    const fetchPlaylists = async () => {
-      const token = await getAccessToken();
-      if (!token) return;
-
+    if (typeof window === "undefined") return;
+    
+    async function checkToken() {
       try {
-        const response = await fetch('https://api.spotify.com/v1/me/playlists', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch playlists');
-        }
-        
+        const response = await fetch('/api/spotify/token');
         const data = await response.json();
-        if (data.items) {
-          setPlaylists(data.items);
+        console.log('[MusicPlayer] Token verificado:', data.access_token ? 'Sí' : 'No');
+        
+        if (response.ok && data.access_token) {
+          setAccessToken(data.access_token);
+          setIsAuthenticated(true);
+          setLoading(false);
+        } else {
+          console.log('[MusicPlayer] No hay token válido');
+          setIsAuthenticated(false);
+          setAccessToken(null);
+          setLoading(false);
         }
       } catch (error) {
-        console.error('Error fetching playlists:', error);
+        console.error('[MusicPlayer] Error verificando token:', error);
+        setIsAuthenticated(false);
+        setAccessToken(null);
+        setLoading(false);
       }
-    };
-
-    fetchPlaylists();
-  }, [isAuthenticated]);
-
-  const playYourPlaylist = async (token: string) => {
-    if (!player) return;
-
-    try {
-      const response = await fetch('https://api.spotify.com/v1/me/player/play', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          context_uri: `spotify:playlist:${YOUR_PLAYLIST_ID}`,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to start playback');
-      }
-    } catch (error) {
-      console.error('Error starting playback:', error);
     }
-  };
 
-  const handleAuth = () => {
-    window.location.href = '/api/auth/spotify';
-  };
+    checkToken();
+    const interval = setInterval(checkToken, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const handlePlayPause = async () => {
-    if (!isAuthenticated) {
-      handleAuth();
+  // Load Spotify SDK
+  useEffect(() => {
+    if (!isAuthenticated || !accessToken) return;
+    if (typeof window === "undefined") return;
+
+    console.log("[MusicPlayer] Estado de autenticación:", { isAuthenticated, hasToken: !!accessToken });
+
+    if ((window as any).Spotify) {
+      console.log("[MusicPlayer] Spotify SDK ya cargado");
+      setupPlayer();
+    } else {
+      console.log("[MusicPlayer] Cargando Spotify SDK...");
+      const script = document.createElement("script");
+      script.src = "https://sdk.scdn.co/spotify-player.js";
+      script.async = true;
+      document.body.appendChild(script);
+      (window as any).onSpotifyWebPlaybackSDKReady = () => {
+        console.log("[MusicPlayer] Spotify SDK listo");
+        setupPlayer();
+      };
+    }
+  }, [isAuthenticated, accessToken]);
+
+  function setupPlayer() {
+    if (typeof window === "undefined") return;
+    if (!accessToken) {
+      console.log("[MusicPlayer] No token para inicializar el player");
+      return;
+    }
+    if (player) {
+      console.log("[MusicPlayer] Player ya inicializado");
       return;
     }
 
-    if (player) {
-      player.togglePlay();
+    console.log("[MusicPlayer] Inicializando Spotify Player...");
+    const spotifyPlayer = new (window as any).Spotify.Player({
+      name: SPOTIFY_PLAYER_NAME,
+      getOAuthToken: (cb: any) => {
+        cb(accessToken);
+      },
+      volume: 0.5,
+    });
+
+    setPlayer(spotifyPlayer);
+
+    spotifyPlayer.addListener("ready", ({ device_id }: any) => {
+      console.log("[MusicPlayer] Player ready, device_id:", device_id);
+      setDeviceId(device_id);
+      setIsReady(true);
+    });
+
+    spotifyPlayer.addListener("not_ready", () => {
+      console.log("[MusicPlayer] Player not ready");
+      setIsReady(false);
+    });
+
+    spotifyPlayer.addListener("player_state_changed", (state: any) => {
+      if (!state) return;
+      console.log("[MusicPlayer] Estado del player actualizado:", state);
+      setCurrentTrack(state.track_window.current_track);
+      setIsPlaying(!state.paused);
+    });
+
+    spotifyPlayer.addListener("initialization_error", ({ message }: any) => {
+      console.error("[MusicPlayer] Initialization error:", message);
+    });
+
+    spotifyPlayer.addListener("authentication_error", ({ message }: any) => {
+      console.error("[MusicPlayer] Authentication error:", message);
+      setIsAuthenticated(false);
+      setAccessToken(null);
+    });
+
+    spotifyPlayer.addListener("account_error", ({ message }: any) => {
+      console.error("[MusicPlayer] Account error:", message);
+    });
+
+    spotifyPlayer.connect();
+  }
+
+  // Play playlist when ready
+  useEffect(() => {
+    if (isReady && deviceId && isAuthenticated) {
+      console.log("[MusicPlayer] Player listo, intentando reproducir playlist...");
+      playPlaylist();
+    }
+  }, [isReady, deviceId, isAuthenticated]);
+
+  async function playPlaylist() {
+    if (!accessToken || !deviceId) {
+      console.log("[MusicPlayer] No token o deviceId para reproducir");
+      return;
+    }
+    try {
+      console.log("[MusicPlayer] Intentando reproducir playlist:", PLAYLIST_URI);
+      const res = await fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          context_uri: PLAYLIST_URI,
+          offset: { position: 0 },
+          position_ms: 0,
+        }),
+      });
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error(`[MusicPlayer] Error al reproducir playlist: ${res.status} - ${errorText}`);
+      } else {
+        console.log("[MusicPlayer] Playlist reproducida correctamente");
+        setIsPlaying(true);
+      }
+    } catch (err) {
+      console.error("[MusicPlayer] Error en playPlaylist:", err);
+    }
+  }
+
+  const handlePlayPause = async () => {
+    if (!player || !accessToken) return;
+
+    try {
+      if (isPlaying) {
+        await player.pause();
+      } else {
+        await player.resume();
+      }
+      setIsPlaying(!isPlaying);
+    } catch (error) {
+      console.error("[MusicPlayer] Error al cambiar estado de reproducción:", error);
     }
   };
 
-  const handleTimeSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = parseFloat(e.target.value);
-    if (player) {
-      player.seek(time);
-      setCurrentTime(time);
+  const handlePrevious = async () => {
+    if (!player || !accessToken) return;
+    try {
+      await player.previousTrack();
+    } catch (error) {
+      console.error("[MusicPlayer] Error al cambiar a la pista anterior:", error);
     }
   };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNext = async () => {
+    if (!player || !accessToken) return;
+    try {
+      await player.nextTrack();
+    } catch (error) {
+      console.error("[MusicPlayer] Error al cambiar a la siguiente pista:", error);
+    }
+  };
+
+  const handleVolumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
     if (player) {
-      player.setVolume(newVolume);
+      try {
+        await player.setVolume(newVolume);
+      } catch (error) {
+        console.error("[MusicPlayer] Error al cambiar el volumen:", error);
+      }
     }
   };
 
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60000);
-    const seconds = Math.floor((time % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  };
+  if (loading) return <div className="fixed bottom-16 right-4 w-72 rounded-lg bg-[#e3b1d2] p-4">Loading...</div>;
 
   if (!isAuthenticated) {
     return (
-      <div className="fixed bottom-16 right-4 z-30 bg-[#e3b1d2]/70 backdrop-blur-sm p-4 rounded-lg">
-        <button
-          className="text-white hover:text-cvs-lightBlue transition-colors flex items-center gap-2"
-          onClick={handleAuth}
+      <div className="fixed bottom-16 right-4 w-72 rounded-lg bg-[#e3b1d2] p-4 flex flex-col items-center">
+        <p className="mb-4 text-white">{t("login_spotify")}</p>
+        <a
+          href="/api/spotify/login"
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
         >
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-11v4l3-2-3-2z"/>
-          </svg>
-          {t("connect_spotify")}
-        </button>
+          {t("login_with_spotify")}
+        </a>
       </div>
     );
   }
 
   return (
     <div
-      className={`fixed z-30 transition-all duration-300 ease-in-out ${
+      className={`fixed transition-all duration-300 ease-in-out ${
         isMinimized
           ? "bottom-16 right-4 w-12 h-12 rounded-full overflow-hidden cursor-pointer hover:scale-110"
           : "bottom-16 right-4 w-72 rounded-lg"
-      } bg-[#e3b1d2]/70 backdrop-blur-sm`}
+      } bg-[#e3b1d2] backdrop-blur-lg`}
       onClick={() => isMinimized && setIsMinimized(false)}
     >
-      {!isMinimized && (
+      {isMinimized ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <img
+            alt={currentTrack?.name || "Current track"}
+            className="w-full h-full object-cover"
+            src={currentTrack?.album?.images[0]?.url || "/music/default-cover.jpg"}
+          />
+        </div>
+      ) : (
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-white text-sm font-medium">
-              {currentTrack?.name || t("no_track")}
+            <h3 className="text-white font-semibold truncate flex-1">
+              {currentTrack?.name || "No track playing"}
             </h3>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsMinimized(true);
-              }}
-              className="text-white hover:text-cvs-lightBlue transition-colors"
               aria-label={t("minimize")}
+              className="text-white hover:text-cvs-lightBlue transition-colors"
+              onClick={() => setIsMinimized(true)}
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 9l-7 7-7-7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                />
               </svg>
             </button>
           </div>
 
           <div className="flex items-center mb-4">
             <img
-              alt={currentTrack?.name || t("no_track")}
+              alt={currentTrack?.name || "Current track"}
               className="w-16 h-16 rounded-md mr-3"
-              src={currentTrack?.album.images[0]?.url || "/music/default-cover.jpg"}
+              src={currentTrack?.album?.images[0]?.url || "/music/default-cover.jpg"}
             />
             <div>
               <p className="text-white text-sm">
-                {currentTrack?.artists.map(a => a.name).join(", ") || t("no_artist")}
+                {currentTrack?.artists?.map((artist: any) => artist.name).join(", ") || "Unknown artist"}
               </p>
               <div className="flex items-center mt-2">
                 <input
@@ -253,68 +300,56 @@ export default function MusicPlayer() {
             </div>
           </div>
 
-          {playlists.length > 0 && (
-            <select
-              className="w-full mb-4 p-2 rounded bg-white/10 text-white"
-              onChange={async (e) => {
-                const token = await getAccessToken();
-                if (!token || !player) return;
-
-                try {
-                  await fetch('https://api.spotify.com/v1/me/player/play', {
-                    method: 'PUT',
-                    headers: {
-                      'Authorization': `Bearer ${token}`,
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      context_uri: `spotify:playlist:${e.target.value}`,
-                    }),
-                  });
-                } catch (error) {
-                  console.error('Error changing playlist:', error);
-                }
-              }}
-            >
-              <option value="">{t("select_playlist")}</option>
-              {playlists.map(playlist => (
-                <option key={playlist.id} value={playlist.id}>
-                  {playlist.name}
-                </option>
-              ))}
-            </select>
-          )}
-
-          <div className="flex items-center justify-center space-x-4">
+          <div className="flex justify-center items-center space-x-4">
             <button
+              aria-label={t("previous")}
+              className="text-white hover:text-cvs-lightBlue transition-colors"
+              onClick={handlePrevious}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+              </svg>
+            </button>
+            <button
+              aria-label={isPlaying ? t("pause") : t("play")}
               className="text-white hover:text-cvs-lightBlue transition-colors"
               onClick={handlePlayPause}
             >
               {isPlaying ? (
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                <svg
+                  className="w-8 h-8"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z"/>
+                <svg
+                  className="w-8 h-8"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5v14l11-7z" />
                 </svg>
               )}
             </button>
-          </div>
-
-          <div className="mt-4">
-            <input
-              type="range"
-              min={0}
-              max={duration}
-              value={currentTime}
-              onChange={handleTimeSeek}
-              className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="flex justify-between text-xs text-white mt-1">
-              <span>{formatTime(currentTime)}</span>
-              <span>{formatTime(duration)}</span>
-            </div>
+            <button
+              aria-label={t("next")}
+              className="text-white hover:text-cvs-lightBlue transition-colors"
+              onClick={handleNext}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+              </svg>
+            </button>
           </div>
         </div>
       )}

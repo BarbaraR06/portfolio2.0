@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "react-scripts build",
+    "start": "HOST=127.0.0.1 react-scripts start",
+    "dev:https": "set USE_HTTPS=true&&next dev",
+    "type": "module",
     "lint": "next lint"
   },
   "dependencies": {
@@ -13,16 +15,21 @@
     "@heroui/system": "^2.4.15",
     "@types/spotify-web-api-node": "^5.0.11",
     "@types/spotify-web-playback-sdk": "^0.1.19",
+    "axios": "^1.9.0",
+    "bufferutil": "^4.0.9",
     "cloudinary-react": "^1.8.1",
     "clsx": "^2.0.0",
     "i18next": "^23.5.1",
     "next": "13.5.4",
+    "next-auth": "^4.24.11",
     "next-cloudinary": "^6.16.0",
     "next-themes": "^0.2.1",
     "react": "^18",
     "react-dom": "^18",
     "react-i18next": "^13.2.2",
-    "spotify-web-api-node": "^5.0.2"
+    "spotify-web-api-node": "^5.0.2",
+    "utf-8-validate": "^6.0.5",
+    "spotify-web-api-js": "^1.5.2"
   },
   "devDependencies": {
     "@types/node": "^20",

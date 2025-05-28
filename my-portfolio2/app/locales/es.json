@@ -24,17 +24,23 @@
     "welcome": "Bienvenida!",
     "signIn": "INICIAR SESIÓN"
   },
-  "music-player": {
+ "music-player": {
     "minimize": "Minimizar reproductor",
     "volume": "Volumen",
     "previous": "Canción anterior",
     "next": "Siguiente canción",
     "play": "Reproducir",
     "pause": "Pausar",
-    "no_track": "No hay canción seleccionada",
-    "no_artist": "No hay artista",
-    "select_playlist": "Selecciona una playlist",
-    "connect_spotify": "Conectar con Spotify"
+    "songs": {
+      "rainy": {
+        "title": "Música para un día lluvioso",
+        "artist": "Lofi Lluvia"
+      },
+      "sunny": {
+        "title": "Música para un día soleado",
+        "artist": "Lofi Sol"
+      }
+    }
   },
   "resume": {
     "title": "Curriculum",
