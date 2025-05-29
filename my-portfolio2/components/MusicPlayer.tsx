@@ -2,10 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const SPOTIFY_PLAYER_NAME = "Portfolio Web Player";
-const PLAYLIST_URI = "spotify:playlist:1u4F50HA53L3Jwxbnk9IeO"; 
+const SPOTIFY_PLAYER_NAME = process.env.NEXT_PUBLIC_SPOTIFY_PLAYER_NAME; //tiene que empezar con NEXT_PUBLIC_ para acceder desde el cliente
+const PLAYLIST_URI = process.env.NEXT_PUBLIC_SPOTIFY_PLAYLIST_URI;
 
 export default function MusicPlayer() {
+  //estados para controlar el player
   const { t } = useTranslation("music-player");
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
@@ -18,27 +19,30 @@ export default function MusicPlayer() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
 
+  // Verifica si hay token válido disponible
   useEffect(() => {
     if (typeof window === "undefined") return;
-    
     async function checkToken() {
       try {
-        const response = await fetch('/api/spotify/token');
+        const response = await fetch("/api/spotify/token");
         const data = await response.json();
-        console.log('[MusicPlayer] Token verificado:', data.access_token ? 'Sí' : 'No');
-        
+        console.log(
+          "[MusicPlayer] Token available:",
+          data.access_token ? "yes" : "no"
+        );
+
         if (response.ok && data.access_token) {
           setAccessToken(data.access_token);
           setIsAuthenticated(true);
           setLoading(false);
         } else {
-          console.log('[MusicPlayer] No hay token válido');
+          console.log("[MusicPlayer] no token available");
           setIsAuthenticated(false);
           setAccessToken(null);
           setLoading(false);
         }
       } catch (error) {
-        console.error('[MusicPlayer] Error verificando token:', error);
+        console.error("[MusicPlayer] error checking token:", error);
         setIsAuthenticated(false);
         setAccessToken(null);
         setLoading(false);
@@ -46,129 +50,115 @@ export default function MusicPlayer() {
     }
 
     checkToken();
-    const interval = setInterval(checkToken, 5000);
+    const interval = setInterval(checkToken, 30_000); // vuelve a verificar cada 30 segundos
     return () => clearInterval(interval);
   }, []);
 
-  // Load Spotify SDK
+  // carga e inicia el SDK si está autenticado
   useEffect(() => {
-    if (!isAuthenticated || !accessToken) return;
-    if (typeof window === "undefined") return;
-
-    console.log("[MusicPlayer] Estado de autenticación:", { isAuthenticated, hasToken: !!accessToken });
+    if (!isAuthenticated || !accessToken || typeof window === "undefined")
+      return;
 
     if ((window as any).Spotify) {
-      console.log("[MusicPlayer] Spotify SDK ya cargado");
       setupPlayer();
     } else {
-      console.log("[MusicPlayer] Cargando Spotify SDK...");
+      // Carga el script del SDK si no está cargado
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
       script.async = true;
       document.body.appendChild(script);
+
+      // cuando el SDK está listo inicia el player
       (window as any).onSpotifyWebPlaybackSDKReady = () => {
-        console.log("[MusicPlayer] Spotify SDK listo");
         setupPlayer();
       };
     }
   }, [isAuthenticated, accessToken]);
 
+  // configura el reproductor con el SDK de Spotify
   function setupPlayer() {
-    if (typeof window === "undefined") return;
-    if (!accessToken) {
-      console.log("[MusicPlayer] No token para inicializar el player");
-      return;
-    }
-    if (player) {
-      console.log("[MusicPlayer] Player ya inicializado");
-      return;
-    }
+    if (!accessToken || player) return;
 
-    console.log("[MusicPlayer] Inicializando Spotify Player...");
     const spotifyPlayer = new (window as any).Spotify.Player({
       name: SPOTIFY_PLAYER_NAME,
-      getOAuthToken: (cb: any) => {
-        cb(accessToken);
-      },
+      getOAuthToken: (cb: any) => cb(accessToken),
       volume: 0.5,
     });
 
     setPlayer(spotifyPlayer);
 
     spotifyPlayer.addListener("ready", ({ device_id }: any) => {
-      console.log("[MusicPlayer] Player ready, device_id:", device_id);
       setDeviceId(device_id);
       setIsReady(true);
     });
 
-    spotifyPlayer.addListener("not_ready", () => {
-      console.log("[MusicPlayer] Player not ready");
-      setIsReady(false);
-    });
+    spotifyPlayer.addListener("not_ready", () => setIsReady(false));
 
     spotifyPlayer.addListener("player_state_changed", (state: any) => {
       if (!state) return;
-      console.log("[MusicPlayer] Estado del player actualizado:", state);
       setCurrentTrack(state.track_window.current_track);
       setIsPlaying(!state.paused);
     });
 
     spotifyPlayer.addListener("initialization_error", ({ message }: any) => {
-      console.error("[MusicPlayer] Initialization error:", message);
+      console.error("Initialization error:", message);
     });
 
     spotifyPlayer.addListener("authentication_error", ({ message }: any) => {
-      console.error("[MusicPlayer] Authentication error:", message);
+      console.error("Authentication error:", message);
       setIsAuthenticated(false);
       setAccessToken(null);
     });
 
     spotifyPlayer.addListener("account_error", ({ message }: any) => {
-      console.error("[MusicPlayer] Account error:", message);
+      console.error("Account error:", message);
     });
 
     spotifyPlayer.connect();
   }
 
-  // Play playlist when ready
+  // reproduce la playlist cuando el player esté listo
   useEffect(() => {
     if (isReady && deviceId && isAuthenticated) {
-      console.log("[MusicPlayer] Player listo, intentando reproducir playlist...");
       playPlaylist();
     }
   }, [isReady, deviceId, isAuthenticated]);
 
+  // llama API Spotify para reproducir la playlist
   async function playPlaylist() {
-    if (!accessToken || !deviceId) {
-      console.log("[MusicPlayer] No token o deviceId para reproducir");
-      return;
-    }
+    if (!accessToken || !deviceId) return;
+
     try {
-      console.log("[MusicPlayer] Intentando reproducir playlist:", PLAYLIST_URI);
-      const res = await fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          context_uri: PLAYLIST_URI,
-          offset: { position: 0 },
-          position_ms: 0,
-        }),
-      });
+      const res = await fetch(
+        `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            context_uri: PLAYLIST_URI,
+            offset: { position: 0 },
+            position_ms: 0,
+          }),
+        }
+      );
+
       if (!res.ok) {
         const errorText = await res.text();
-        console.error(`[MusicPlayer] Error al reproducir playlist: ${res.status} - ${errorText}`);
+        console.error(
+          `[MusicPlayer] error playing playlist: ${res.status} - ${errorText}`
+        );
       } else {
-        console.log("[MusicPlayer] Playlist reproducida correctamente");
         setIsPlaying(true);
       }
     } catch (err) {
-      console.error("[MusicPlayer] Error en playPlaylist:", err);
+      console.error("[MusicPlayer] error playing playlist:", err);
     }
   }
 
+  // cambia el estado de reproducción play/pause
   const handlePlayPause = async () => {
     if (!player || !accessToken) return;
 
@@ -180,28 +170,34 @@ export default function MusicPlayer() {
       }
       setIsPlaying(!isPlaying);
     } catch (error) {
-      console.error("[MusicPlayer] Error al cambiar estado de reproducción:", error);
+      console.error("[MusicPlayer] error changing playback state:", error);
     }
   };
 
+  // cambia a la pista anterior
   const handlePrevious = async () => {
     if (!player || !accessToken) return;
     try {
       await player.previousTrack();
     } catch (error) {
-      console.error("[MusicPlayer] Error al cambiar a la pista anterior:", error);
+      console.error(
+        "[MusicPlayer] Error switching to the previous track:",
+        error
+      );
     }
   };
 
+  // cambia a la siguiente pista
   const handleNext = async () => {
     if (!player || !accessToken) return;
     try {
       await player.nextTrack();
     } catch (error) {
-      console.error("[MusicPlayer] Error al cambiar a la siguiente pista:", error);
+      console.error("[MusicPlayer] Error switching to the next track:", error);
     }
   };
 
+  // cambia el volumen
   const handleVolumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -209,12 +205,18 @@ export default function MusicPlayer() {
       try {
         await player.setVolume(newVolume);
       } catch (error) {
-        console.error("[MusicPlayer] Error al cambiar el volumen:", error);
+        console.error("[MusicPlayer] error changing volume:", error);
       }
     }
   };
 
-  if (loading) return <div className="fixed bottom-16 right-4 w-72 rounded-lg bg-[#e3b1d2] p-4">{t("loading")}</div>;
+  // UI mientras se carga o si no está autenticado
+  if (loading)
+    return (
+      <div className="fixed bottom-16 right-4 w-72 rounded-lg bg-[#e3b1d2] p-4">
+        {t("loading")}
+      </div>
+    );
 
   if (!isAuthenticated) {
     return (
@@ -244,11 +246,14 @@ export default function MusicPlayer() {
           <img
             alt={currentTrack?.name || "Current track"}
             className="w-full h-full object-cover"
-            src={currentTrack?.album?.images[0]?.url || "/music/default-cover.jpg"}
+            src={
+              currentTrack?.album?.images[0]?.url || "/music/default-cover.jpg"
+            }
           />
         </div>
       ) : (
         <div className="p-4">
+          {/* nombre de la canción y botón minimizar */}
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-white font-semibold truncate flex-1">
               {currentTrack?.name || "No track playing"}
@@ -273,16 +278,21 @@ export default function MusicPlayer() {
               </svg>
             </button>
           </div>
-
+          {/* info del track actual y control de volumen */}
           <div className="flex items-center mb-4">
             <img
               alt={currentTrack?.name || "Current track"}
               className="w-16 h-16 rounded-md mr-3"
-              src={currentTrack?.album?.images[0]?.url || "/music/default-cover.jpg"}
+              src={
+                currentTrack?.album?.images[0]?.url ||
+                "/music/default-cover.jpg"
+              }
             />
             <div>
               <p className="text-white text-sm">
-                {currentTrack?.artists?.map((artist: any) => artist.name).join(", ") || "Unknown artist"}
+                {currentTrack?.artists
+                  ?.map((artist: any) => artist.name)
+                  .join(", ") || "Unknown artist"}
               </p>
               <div className="flex items-center mt-2">
                 <input
@@ -298,18 +308,14 @@ export default function MusicPlayer() {
               </div>
             </div>
           </div>
-
+          {/* Controles de reproducción */}
           <div className="flex justify-center items-center space-x-4">
             <button
               aria-label={t("previous")}
               className="text-white hover:text-cvs-lightBlue transition-colors"
               onClick={handlePrevious}
             >
-              <svg
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
               </svg>
             </button>
@@ -341,11 +347,7 @@ export default function MusicPlayer() {
               className="text-white hover:text-cvs-lightBlue transition-colors"
               onClick={handleNext}
             >
-              <svg
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
               </svg>
             </button>

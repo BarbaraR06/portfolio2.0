@@ -1,62 +1,55 @@
-import { NextResponse } from 'next/server';
-import crypto from 'crypto';
+import { NextResponse } from "next/server";
+import crypto from "crypto";
 
+//función para generar un string aleatorio para seguridad
 function generateRandomString(length: number): string {
-  return crypto.randomBytes(length).toString('hex');
+  return crypto.randomBytes(length).toString("hex");
 }
 
 export async function GET() {
-  console.log('[Spotify Login] Starting login process', {
-    clientId: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID ? 'present' : 'missing',
-    redirectUri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI ? 'present' : 'missing'
+  const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+  const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
+
+  console.log("[Spotify Login] Starting login process", {
+    clientId: clientId ? "present" : "missing",
+    redirectUri: redirectUri ? "present" : "missing",
   });
 
-  if (!process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID || !process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI) {
-    console.error('[Spotify Login] Missing required environment variables');
-    return NextResponse.json({ error: 'Missing required environment variables' }, { status: 500 });
+  // validación de variables de entorno
+  if (!clientId || !redirectUri) {
+    return NextResponse.json(
+      { error: "Missing required environment variables" },
+      { status: 500 }
+    );
   }
 
+  //generar parámetro "state" para prevenir ataques CSRF
   const state = generateRandomString(16);
-  
 
-  const scope = 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state';
-  const authUrl = new URL('https://accounts.spotify.com/authorize');
-  authUrl.searchParams.append('client_id', process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID);
-  authUrl.searchParams.append('response_type', 'code');
-  authUrl.searchParams.append('redirect_uri', 'https://portfolio2-0-ochre-chi.vercel.app/api/spotify/callback');
-  authUrl.searchParams.append('state', state);
-  authUrl.searchParams.append('scope', scope);
-  authUrl.searchParams.append('show_dialog', 'true');
+  // definición de permisos solicitados a Spotify
+  const scope =
+    "streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state";
 
-  console.log('[Spotify Login] Redirecting to Spotify auth URL:', authUrl.toString());
-  
+  // construcción de URL de autorización de Spotify
+  const authUrl = new URL("https://accounts.spotify.com/authorize");
+  authUrl.searchParams.append("client_id", clientId);
+  authUrl.searchParams.append("response_type", "code");
+  authUrl.searchParams.append("redirect_uri", redirectUri);
+  authUrl.searchParams.append("state", state);
+  authUrl.searchParams.append("scope", scope);
+  authUrl.searchParams.append("show_dialog", "true");
+
+  // crear respuesta de redirección
   const response = NextResponse.redirect(authUrl);
 
-  response.cookies.set('spotify_auth_state', state, {
-    httpOnly: true, 
-    secure: process.env.NODE_ENV === 'production', 
-    sameSite: 'lax', 
-    path: '/',
-    maxAge: 60 * 10, 
-    domain: 'portfolio2-0-ochre-chi.vercel.app' 
-  });
-
-  console.log('[Spotify Login] Setting state cookie:', {
-    state,
-    cookieOptions: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 10,
-      domain: 'portfolio2-0-ochre-chi.vercel.app'
-    }
-  });
-
-  console.log('[Spotify Login] Response headers:', {
-    location: response.headers.get('location'),
-    setCookie: response.headers.get('set-cookie')
+  // guarda el parámetro `state` en una cookie solo por el servidor, para mayor seguridad
+  response.cookies.set("spotify_auth_state", state, {
+    httpOnly: true, // inaccesible desde JS del cliente
+    secure: process.env.NODE_ENV === "production", // solo HTTPS en producción
+    sameSite: "lax", // protección contra CSRF
+    path: "/", // disponible en todo el sitio
+    maxAge: 60 * 10, // expira en 10 minutos
   });
 
   return response;
-} 
+}

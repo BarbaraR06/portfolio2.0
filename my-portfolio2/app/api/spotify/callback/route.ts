@@ -1,112 +1,78 @@
-import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const code = searchParams.get('code');
-  const state = searchParams.get('state');
-  const error = searchParams.get('error');
+  const code = searchParams.get("code");
+  const state = searchParams.get("state");
+  const error = searchParams.get("error");
+  const storedState = cookies().get("spotify_auth_state")?.value;
 
-  const storedState = cookies().get('spotify_auth_state')?.value;
-
-  console.log('[Spotify Callback] Received callback with:', {
-    code: code ? 'present' : 'missing',
-    state: state ? 'present' : 'missing',
-    error: error || 'none',
-    storedState: storedState ? 'present' : 'missing'
-  });
-
-  if (error) {
-    console.error('[Spotify Callback] Error from Spotify:', error);
-    return NextResponse.json({ error: `Spotify error: ${error}` }, { status: 400 });
-  }
-
-  if (!code) {
-    console.error('[Spotify Callback] No code provided');
-    return NextResponse.json({ error: 'No code provided' }, { status: 400 });
-  }
-
-  console.log('[Spotify Callback] Verifying state:', {
-    received: state,
-    stored: storedState
-  });
-
-  if (!state || !storedState || state !== storedState) {
-    console.error('[Spotify Callback] State mismatch:', {
-      received: state,
-      stored: storedState
-    });
+  if (error)
     return NextResponse.json(
-      { error: 'State mismatch' },
-      { status: 403 }
+      { error: `Spotify error: ${error}` },
+      { status: 400 }
     );
-  }
+  if (!code)
+    return NextResponse.json({ error: "No code provided" }, { status: 400 });
+  if (!state || state !== storedState)
+    return NextResponse.json({ error: "State mismatch" }, { status: 403 });
 
   try {
-    console.log('[Spotify Callback] Attempting to exchange code for token');
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
+    // se intercambia el código por tokens (access + refresh)
+    const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${Buffer.from(
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${Buffer.from(
           `${process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
-        ).toString('base64')}`
+        ).toString("base64")}`,
       },
       body: new URLSearchParams({
-        code: code,
-        redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI || '',
-        grant_type: 'authorization_code'
-      })
+        code,
+        redirect_uri: process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI || "",
+        grant_type: "authorization_code",
+      }),
     });
 
-    const data = await response.json();
+    const tokenData = await tokenRes.json();
+    if (!tokenRes.ok)
+      throw new Error(
+        tokenData.error_description || "Failed to get access token"
+      );
 
-    if (!response.ok) {
-      console.error('[Spotify Callback] Token exchange failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        error: data
-      });
-      throw new Error(data.error_description || 'Failed to get access token');
-    }
+    // redirección al frontend después del login
+    const res = NextResponse.redirect(
+      new URL(process.env.NEXT_PUBLIC_BASE_URL!)
+    );
+    // eliminar la cookie de estado temporal
+    res.cookies.set("spotify_auth_state", "", { path: "/", maxAge: 0 });
 
-    console.log('[Spotify Callback] Successfully obtained tokens');
-
-
-    const redirectUrl = new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://portfolio2-0-ochre-chi.vercel.app');
-    const redirectResponse = NextResponse.redirect(redirectUrl);
-
-  
-    redirectResponse.cookies.set('spotify_auth_state', '', {
-      path: '/',
-      maxAge: 0
+    // guardar el access token en una cookie segura
+    res.cookies.set("spotify_access_token", tokenData.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: tokenData.expires_in,
     });
 
-    redirectResponse.cookies.set('spotify_access_token', data.access_token, {
-      httpOnly: true, 
-      secure: process.env.NODE_ENV === 'production', 
-      sameSite: 'lax', 
-      path: '/',
-      maxAge: data.expires_in
+    // guarda el refresh token con una duración de 30 días
+    res.cookies.set("spotify_refresh_token", tokenData.refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 2592000,
     });
 
-    redirectResponse.cookies.set('spotify_refresh_token', data.refresh_token, {
-      httpOnly: true, 
-      secure: process.env.NODE_ENV === 'production', 
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 30 * 24 * 60 * 60 
-    });
-
-  
-    console.log('[Spotify Callback] Response headers:', {
-      location: redirectResponse.headers.get('location'),
-      setCookie: redirectResponse.headers.get('set-cookie')
-    });
-
-    return redirectResponse;
-  } catch (error) {
-    console.error('[Spotify Callback] Error in callback:', error);
-    return NextResponse.json({ error: 'Failed to authenticate' }, { status: 500 });
+    // redirigir al usuario al frontend
+    return res;
+  } catch (err) {
+    console.error("[Spotify Callback] Authentication error:", err);
+    return NextResponse.json(
+      { error: "Failed to authenticate" },
+      { status: 500 }
+    );
   }
-} 
+}
