@@ -15,7 +15,6 @@
     "@types/spotify-web-playback-sdk": "^0.1.19",
     "axios": "^1.9.0",
     "bufferutil": "^4.0.9",
-    "cloudinary-react": "^1.8.1",
     "clsx": "^2.0.0",
     "i18next": "^23.5.1",
     "next": "13.5.4",
