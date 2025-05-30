@@ -15,7 +15,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     setIsDownloading(true);
     const link = document.createElement("a");
     link.href = CV_FILE;
-    link.download = "Barbara-Ruiz-CV.pdf";
+    link.download = "Barbara_Ruiz_CV.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
