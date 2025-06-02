@@ -73,7 +73,7 @@ export default function Home() {
 
   return (
     <section
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-[100dvh] relative overflow-hidden"
       onClick={() => setSelected(null)}
     >
       <div className="fixed inset-0 bg-mesh-gradient-vertical bg-cover bg-center" />
