@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const SPOTIFY_PLAYER_NAME = process.env.NEXT_PUBLIC_SPOTIFY_PLAYER_NAME; //tiene que empezar con NEXT_PUBLIC_ para acceder desde el cliente
+const SPOTIFY_PLAYER_NAME = process.env.NEXT_PUBLIC_SPOTIFY_PLAYER_NAME; 
 const PLAYLIST_URI = process.env.NEXT_PUBLIC_SPOTIFY_PLAYLIST_URI;
 
 export default function MusicPlayer() {
