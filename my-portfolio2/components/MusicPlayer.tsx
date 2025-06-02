@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const SPOTIFY_PLAYER_NAME = process.env.NEXT_PUBLIC_SPOTIFY_PLAYER_NAME; 
-const PLAYLIST_URI = process.env.NEXT_PUBLIC_SPOTIFY_PLAYLIST_URI;
+const SPOTIFY_PLAYER_NAME = "Portfolio Web Player";
+const PLAYLIST_URI = "spotify:playlist:1u4F50HA53L3Jwxbnk9IeO"; 
 
 export default function MusicPlayer() {
   //estados para controlar el player
