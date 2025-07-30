@@ -6,7 +6,7 @@ export default function Spotify() {
     <div className="items-center flex flex-col">
       <img
         alt="Spotify Icon"
-        className="md:w-32 md:h-32 w-20 h-20 "
+        className="w-20 h-20 "
         src="/spotify.svg"
       />
     </div>

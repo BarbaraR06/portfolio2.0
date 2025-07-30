@@ -74,13 +74,14 @@ export default function Home() {
       className="min-h-[100dvh] relative overflow-hidden"
       onClick={() => setSelected(null)}
     >
-      <div className="fixed inset-0 bg-mesh-gradient-vertical bg-cover bg-center" />
-      <div className="fixed inset-0 bg-grid-pattern bg-grid-size opacity-50" />
+      <div className="fixed inset-0 bg-mesh-gradient-vertical bg-cover bg-center" /> //background
+      <div className="fixed inset-0 bg-grid-pattern bg-grid-size opacity-50" /> //background
 
       <TransitionOverlay isActive={isTransitioning} />
-
-      <div className="ml-4 mt-10 relative z-10">
-        <div className="grid grid-cols-2 grid-rows-3 w-1/2 md:w-1/5 text-defaultText gap-2">
+       
+       */Icons/*
+      <div className="ml-4 md:ml-0 mt-6 relative z-10">
+        <div className="grid grid-cols-2 grid-rows-3 w-1/5 md:w-1/5 text-defaultText">
           {[
             { component: <Education />, key: "Education", label: t("education") },
             { component: <Work />, key: "Work", label: t("work") },
@@ -92,7 +93,7 @@ export default function Home() {
           ].map((item) => (
             <div
               key={item.key}
-              className={`group p-4 border-2 rounded-lg border-transparent flex flex-col items-center justify-center w-full h-full transition-all duration-200
+              className={`group p-1 border-2 rounded-lg border-transparent flex flex-col items-center justify-center h-full transition-all duration-200
                 ${
                   selected === item.key
                     ? "bg-cvs-rose bg-opacity-60 border-cvs-pink"
@@ -106,7 +107,7 @@ export default function Home() {
             >
               <div className="flex flex-col items-center justify-center w-full text-center">
                 {item.component}
-                <span className="text-defaultText font-bold mt-2 text-lg xl2:text-4xl">
+                <span className="text-defaultText font-bold text-lg xl2:text-4xl">
                   {item.label}
                 </span>
               </div>

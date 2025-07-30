@@ -12,7 +12,7 @@ export default function Github() {
     <div className="items-center flex flex-col">
       <img
         alt="Github Icon"
-        className="md:w-32 md:h-32 w-20 h-20 "
+        className="w-20 h-20"
         src="/github.svg"
         onDoubleClick={handleGithubClick}
       />
