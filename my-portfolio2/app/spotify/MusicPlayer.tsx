@@ -213,18 +213,17 @@ export default function MusicPlayer() {
   // UI mientras se carga o si no está autenticado
   if (loading)
     return (
-      <div className="fixed bottom-16 right-4 w-72 rounded-lg bg-[#e3b1d2] p-4">
+      <div className="w-72 rounded-lg bg-[#e3b1d2] p-4">
         {t("loading")}
       </div>
     );
 
   if (!isAuthenticated) {
     return (
-      <div className="fixed bottom-16 right-4 w-72 rounded-lg bg-[#e3b1d2] p-4 flex flex-col items-center">
-        <p className="mb-4 text-white">{t("login_spotify")}</p>
+      <div className="w-72 rounded-lg p-4 flex items-center">
         <a
           href="/api/spotify/login"
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+          className="bg-[#e3b1d2] text-white px-4 py-2 rounded hover:bg-[#8a4f76] transition"
         >
           {t("login_with_spotify")}
         </a>
@@ -234,11 +233,7 @@ export default function MusicPlayer() {
 
   return (
     <div
-      className={`fixed transition-all duration-300 ease-in-out ${
-        isMinimized
-          ? "bottom-16 right-4 w-12 h-12 rounded-full overflow-hidden cursor-pointer hover:scale-110"
-          : "bottom-16 right-4 w-72 rounded-lg"
-      } bg-[#e3b1d2] backdrop-blur-lg`}
+      className={`transition-all duration-300 ease-in-out w-72 rounded-lg bg-[#e3b1d2] backdrop-blur-lg`}
       onClick={() => isMinimized && setIsMinimized(false)}
     >
       {isMinimized ? (

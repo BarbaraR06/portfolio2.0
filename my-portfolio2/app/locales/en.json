@@ -5,7 +5,9 @@
     "about": "About Me",
     "email": "Email",
     "github": "Github",
-    "resume": "Resume"
+    "resume": "Resume",
+    "game": "Game",
+    "spotify": "Spotify"
   },
   "footer": {
     "shutdown": "Shut down",

@@ -19,11 +19,11 @@ const iconPaths: Record<string, string> = {
   Email: "/mail.svg",
   Github: "/github.svg",
   Resume: "/resume.svg",
+  Game: "/console.svg",
 };
 
 export default function Footer({
   minimizedTabs,
-  
   onRestoreTab,
   iconsInFooter,
   setIsTransitioning,

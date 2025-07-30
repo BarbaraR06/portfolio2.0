@@ -5,7 +5,9 @@
     "about": "Sobre mí",
     "email": "Correo",
     "github": "Github",
-    "resume": "Currículum"
+    "resume": "Currículum",
+    "game": "Juego",
+    "spotify": "Spotify"
   },
   "footer": {
     "shutdown": "Apagar",

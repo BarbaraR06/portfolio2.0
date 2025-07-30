@@ -8,6 +8,7 @@ import Work from "./work";
 import Resume from "./resume";
 import Github from "./github";
 import AboutMe from "./about-me";
+import Spotify from "./spotify";
 
 import Modal from "@/components/modal";
 import EducationModal from "@/components/modals/education";
@@ -15,10 +16,10 @@ import WorkModal from "@/components/modals/work";
 import EmailModal from "@/components/modals/email";
 import GithubModal from "@/components/modals/github";
 import ResumeModal from "@/components/modals/resume";
-import Footer from "@/app/footer";
 import AboutMeModal from "@/components/modals/about";
+import SpotifyModal from "@/components/modals/spotify";
 import TransitionOverlay from "@/components/TransitionOverlay";
-import MusicPlayer from "@/components/MusicPlayer";
+import Footer from "@/app/footer";
 
 export default function Home() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -26,8 +27,8 @@ export default function Home() {
   const [minimizedTabs, setMinimizedTabs] = useState<string[]>([]);
   const [iconsInFooter, setIconsInFooter] = useState<string[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const { t } = useTranslation("home");
 
+  const { t } = useTranslation("home");
 
   const handleClick = (key: string) => {
     setSelected((prev) => (prev === key ? null : key));
@@ -35,19 +36,13 @@ export default function Home() {
 
   const handleDoubleClick = (key: string) => {
     setOpenTab(key);
-
-    setIconsInFooter((prev) => {
-      if (!prev.includes(key)) {
-        return [...prev, key];
-      }
-
-      return prev;
-    });
+    setIconsInFooter((prev) => (!prev.includes(key) ? [...prev, key] : prev));
     setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
   };
 
   const handleMinimizeTab = (key: string) => {
     setMinimizedTabs((prev) => [...prev, key]);
+    setIconsInFooter((prev) => (prev.includes(key) ? prev : [...prev, key]));
     setOpenTab(null);
   };
 
@@ -68,7 +63,10 @@ export default function Home() {
     AboutMe: <AboutMeModal />,
     Email: <EmailModal />,
     Github: <GithubModal />,
-    Resume: <ResumeModal isOpen={true} onClose={() => handleCloseTab("Resume")} />,
+    Spotify: <SpotifyModal />,
+    Resume: (
+      <ResumeModal isOpen={true} onClose={() => handleCloseTab("Resume")} />
+    ),  
   };
 
   return (
@@ -80,19 +78,17 @@ export default function Home() {
       <div className="fixed inset-0 bg-grid-pattern bg-grid-size opacity-50" />
 
       <TransitionOverlay isActive={isTransitioning} />
+
       <div className="ml-4 mt-10 relative z-10">
-        <div className="grid grid-cols-2 grid-rows-3 w-1/2 md:w-1/5 text-defaultText">
+        <div className="grid grid-cols-2 grid-rows-3 w-1/2 md:w-1/5 text-defaultText gap-2">
           {[
-            {
-              component: <Education />,
-              key: "Education",
-              label: t("education"),
-            },
+            { component: <Education />, key: "Education", label: t("education") },
             { component: <Work />, key: "Work", label: t("work") },
             { component: <AboutMe />, key: "AboutMe", label: t("about") },
             { component: <Email />, key: "Email", label: t("email") },
             { component: <Github />, key: "Github", label: t("github") },
             { component: <Resume />, key: "Resume", label: t("resume") },
+            { component: <Spotify />, key: "Spotify", label: t("spotify") },
           ].map((item) => (
             <div
               key={item.key}
@@ -118,6 +114,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+
       {openTab && !minimizedTabs.includes(openTab) && (
         <Modal
           title={t(openTab.toLowerCase())}
@@ -127,7 +124,6 @@ export default function Home() {
           {modalComponents[openTab] || null}
         </Modal>
       )}
-      <MusicPlayer />
       <Footer
         iconsInFooter={iconsInFooter}
         minimizedTabs={minimizedTabs}
