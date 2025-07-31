@@ -63,15 +63,15 @@ export default function Footer({
           />
         </div>
         {isMenuOpen && (
-          <div className="text-defaultText font-bold absolute bottom-[3.5rem] left-0 bg-cvs-rose flex flex-col items-center w-1/2 md:w-1/6 rounded-t-lg">
+          <div className="text-defaultText font-bold absolute bottom-[3.5rem] left-0 bg-cvs-rose flex flex-col items-center w-1/2 md:w-1/6 rounded-tr-lg">
             <button
-              className="hover:bg-[#e3cadb] w-full text-left p-2 pl-4 mt-4"
+              className="hover:bg-[#e3cadb] w-[95%] text-left p-2 mt-4 rounded-sm"
               onClick={handleShutdown}
             >
               {t("shutdown")}
             </button>
             <button
-              className="hover:bg-[#e3cadb] w-full text-left p-2 pl-4"
+              className="hover:bg-[#e3cadb] w-[95%] text-left p-2 rounded-sm "
               onClick={handleLogout}
             >
               {t("logout")}

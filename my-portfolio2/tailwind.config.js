@@ -28,18 +28,23 @@ const config = {
       screens: {
         xl2: "2500px",
       },
-      colors: {
-        defaultText: "#333333",
-        cvs: {
-          darkBlue: "#355f7a",
-          lightBlue: "#84c9ef",
-          skyBlue: "#b4d2ed",
-          lilac: "#cbbddd",
-          pink: "#dcb5d4",
-          rose: "#e3b1d2",
-        },
-      },
       keyframes: {
+        cloud1: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(200%)' },
+        },
+        cloud2: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(200%)' },
+        },
+        cloud3: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(200%)' },
+        },
+        cloud4: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(200%)' },
+        },
         "fade-in": {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
@@ -50,8 +55,23 @@ const config = {
         },
       },
       animation: {
+        "cloud1": 'cloud1 60s linear infinite',
+        "cloud2": 'cloud2 60s linear infinite',
+        "cloud3": 'cloud3 60s linear infinite',
+        "cloud4": 'cloud4 60s linear infinite',
         "fade-in": "fade-in 0.3s ease-in-out",
         "zoom-in": "zoom-in 0.3s ease-in-out",
+      },
+      colors: {
+        defaultText: "#333333",
+        cvs: {
+          darkBlue: "#355f7a",
+          lightBlue: "#84c9ef",
+          skyBlue: "#b4d2ed",
+          lilac: "#cbbddd",
+          pink: "#dcb5d4",
+          rose: "#e3b1d2",
+        },
       },
     },
   },
