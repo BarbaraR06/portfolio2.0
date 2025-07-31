@@ -118,7 +118,7 @@ export default function Home() {
 
       {openTab && !minimizedTabs.includes(openTab) && (
         <Modal
-          title={t(openTab.toLowerCase())}
+          title={t(openTab)}
           onClose={() => handleCloseTab(openTab)}
           onMinimize={() => handleMinimizeTab(openTab)}
         >
