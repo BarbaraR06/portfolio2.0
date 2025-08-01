@@ -2,3 +2,5 @@
 [{"name":"next-dev","duration":27837570,"timestamp":78357568081,"id":1,"tags":{},"startTime":1752264383725,"traceId":"911f30d48ac425b2"}]
 [{"name":"next-dev","duration":8048850,"timestamp":251980224094,"id":1,"tags":{},"startTime":1753883800083,"traceId":"b7bd7c98efba8a82"}]
 [{"name":"next-dev","duration":993528,"timestamp":252021073119,"id":1,"tags":{},"startTime":1753883840932,"traceId":"afce80110be7c3e2"}]
+[{"name":"next-dev","duration":9621460,"timestamp":334865291473,"id":1,"tags":{},"startTime":1753966680925,"traceId":"14cbe16f4759c1f5"}]
+[{"name":"next-dev","duration":7401935,"timestamp":63267222791,"id":1,"tags":{},"startTime":1754056291442,"traceId":"17237e2d1eca2c19"}]

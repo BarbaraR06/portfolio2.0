@@ -101,13 +101,13 @@ export default function LogoutPage() {
       />
       <TransitionOverlay isActive={isTransitioning} />
       <div className="login-container bg-white/40 backdrop-blur-lg rounded-xl flex flex-col items-center fadeIn max-w-sm p-12 gap-4">
-        <p className="text-white text-3xl font-mono mt-4">{formatted.date}</p>
-        <p className="text-white text-5xl font-mono mt-2">{formatted.hours}</p>
-        <p className="text-white text-4xl font-mono opacity-80 -mt-2">
+        <p className="text-cvs-rose text-3xl font-mono mt-4">{formatted.date}</p>
+        <p className="text-cvs-rose text-5xl font-mono mt-2">{formatted.hours}</p>
+        <p className="text-cvs-rose text-4xl font-mono opacity-80 -mt-2">
           {formatted.minutes}
         </p>
       </div>
-      <p className=" text-white opacity-80 animate-pulse mt-4">
+      <p className=" text-white animate-pulse mt-4">
         {" "}
         Press space to enter
       </p>
