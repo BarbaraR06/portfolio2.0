@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 
 import LanguageSwitcher from "@/components/languageSwitcher";
+import Clock from "./clock";
 
 type FooterProps = {
   minimizedTabs: string[];
@@ -85,17 +86,14 @@ export default function Footer({
               className="bg-[#e3cadb] p-4 hover:bg-[#552445] transition-colors"
               onClick={() => onRestoreTab(tab)}
             >
-              <img
-                alt={tab}
-                className="w-6 h-6"
-                src={iconPaths[tab] || "/default-icon.svg"}
-              />
+              <img alt={tab} className="w-6 h-6" src={iconPaths[tab]} />
             </button>
           ))}
         </div>
       </div>
       <div className="flex items-center">
         <LanguageSwitcher />
+        <Clock/>
       </div>
     </footer>
   );
