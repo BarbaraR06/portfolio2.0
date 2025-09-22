@@ -7,7 +7,9 @@
     "github": "Github",
     "resume": "Currículum",
     "game": "Juego",
-    "spotify": "Spotify"
+    "spotify": "Spotify",
+    "behance": "Behance",
+    "projects": "Proyectos"
   },
   "footer": {
     "shutdown": "Apagar",
@@ -44,6 +46,10 @@
     "no": "No",
     "downloaded": "Descargado"
   },
+    "projects": {
+    "opengrano": "Plataforma Opengrano",
+    "game": "Juego"
+  },
   "work": {
     "opengrano": {
       "title": "Desarrolladora Frontend",
@@ -52,7 +58,7 @@
       "platform": "Plataforma Web3",
       "theBadge": "TheBadge",
       "theBadgeLink": "https://www.thebadge.xyz/",
-      "period": "Diciembre 2023 - presente",
+      "period": "Julio 2024 - presente",
       "responsibilities": [
         "Diseño y desarrollo de componentes frontend reutilizables usando React, Next.js, TailwindCSS y TypeScript.",
         "Configuración de traducciones en múltiples idiomas con i18n.",

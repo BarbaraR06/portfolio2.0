@@ -7,7 +7,9 @@
     "github": "Github",
     "resume": "Resume",
     "game": "Game",
-    "spotify": "Spotify"
+    "spotify": "Spotify",
+    "behance": "Behance",
+    "projects": "Projects"
   },
   "footer": {
     "shutdown": "Shut down",
@@ -44,6 +46,10 @@
     "no": "No",
     "downloaded": "Downloaded"
   },
+  "projects": {
+    "opengrano": "Opengrano Platform",
+    "game": "Game"
+  },
   "work": {
     "opengrano": {
       "title": "Frontend Developer",
@@ -52,7 +58,7 @@
       "platform": "Web3 Platform",
       "theBadge": "TheBadge",
       "theBadgeLink": "https://www.thebadge.xyz/",
-      "period": "December 2023 - present",
+      "period": "July 2024 - present",
       "responsibilities": [
         "Design and develop reusable frontend components using React, Next.js, TailwindCSS, and TypeScript.",
         "Configure translations in multiple languages with i18n.",

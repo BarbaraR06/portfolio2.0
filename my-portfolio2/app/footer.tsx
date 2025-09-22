@@ -20,7 +20,9 @@ const iconPaths: Record<string, string> = {
   Email: "/mail.svg",
   Github: "/github.svg",
   Resume: "/resume.svg",
-  Game: "/console.svg",
+  Spotify: "/spotify.svg",
+  Behance: "/behance.svg",
+  Projects: "/projects.svg",
 };
 
 export default function Footer({
@@ -58,7 +60,9 @@ export default function Footer({
         <div className="flex">
           <img
             alt="Home cat icon"
-            className="w-14 h-14 xl:w-15 xl:h-15 hover:bg-[#552445] p-2"
+            className={`w-14 h-14 xl:w-15 xl:h-15 p-2 cursor-pointer hover:bg-[#552445] 
+    transition-opacity duration-800 ease-in-out
+    ${!isMenuOpen ? "animate-fade-in-out" : ""}`}
             src="/cat.svg"
             onClick={toggleMenu}
           />
@@ -93,7 +97,7 @@ export default function Footer({
       </div>
       <div className="flex items-center">
         <LanguageSwitcher />
-        <Clock/>
+        <Clock />
       </div>
     </footer>
   );

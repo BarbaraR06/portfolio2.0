@@ -60,9 +60,9 @@ export async function GET(request: Request) {
 
     console.log('[Spotify Token] Token refreshed successfully');
 
-    const jsonResponse = NextResponse.json({ access_token: data.access_token });
+    const jsonResponse = NextResponse.json({ access_token: data.access_token }); //responde con el nuevo access token
 
-    jsonResponse.cookies.set('spotify_access_token', data.access_token, {
+    jsonResponse.cookies.set('spotify_access_token', data.access_token, { //guarda el nuevo access token en una cookie
       httpOnly: false, 
       secure: false, 
       sameSite: 'lax',

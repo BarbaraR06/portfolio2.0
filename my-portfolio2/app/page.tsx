@@ -9,6 +9,8 @@ import Resume from "./resume";
 import Github from "./github";
 import AboutMe from "./about-me";
 import Spotify from "./spotify";
+import Behance from "./behance";
+import Projects from "@/projects";
 
 import Modal from "@/components/modal";
 import EducationModal from "@/components/modals/education";
@@ -18,6 +20,8 @@ import GithubModal from "@/components/modals/github";
 import ResumeModal from "@/components/modals/resume";
 import AboutMeModal from "@/components/modals/about";
 import SpotifyModal from "@/components/modals/spotify";
+import BehanceModal from "@/components/modals/behance";
+import ProjectsModal from "@/components/modals/projects";
 import TransitionOverlay from "@/components/TransitionOverlay";
 import Footer from "@/app/footer";
 
@@ -64,6 +68,8 @@ export default function Home() {
     Email: <EmailModal />,
     Github: <GithubModal />,
     Spotify: <SpotifyModal />,
+    Behance: <BehanceModal />,
+    Projects: <ProjectsModal />,
     Resume: (
       <ResumeModal isOpen={true} onClose={() => handleCloseTab("Resume")} />
     ),  
@@ -90,6 +96,8 @@ export default function Home() {
             { component: <Github />, key: "Github", label: t("github") },
             { component: <Resume />, key: "Resume", label: t("resume") },
             { component: <Spotify />, key: "Spotify", label: t("spotify") },
+            { component: <Behance />, key: "Behance", label: t("behance") },
+            { component: <Projects />, key: "Projects", label: t("projects") },
           ].map((item) => (
             <div
               key={item.key}

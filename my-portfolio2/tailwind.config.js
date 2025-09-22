@@ -53,6 +53,10 @@ const config = {
           "0%": { transform: "scale(0.95)" },
           "100%": { transform: "scale(1)" },
         },
+        "fade-in-out": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.3" },
+        },
       },
       animation: {
         "cloud1": 'cloud1 60s linear infinite',
@@ -61,6 +65,7 @@ const config = {
         "cloud4": 'cloud4 60s linear infinite',
         "fade-in": "fade-in 0.3s ease-in-out",
         "zoom-in": "zoom-in 0.3s ease-in-out",
+        "fade-in-out": "fade-in-out 2s ease-in-out infinite",
       },
       colors: {
         defaultText: "#333333",
