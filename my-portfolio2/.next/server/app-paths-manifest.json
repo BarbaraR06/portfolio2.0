@@ -1,5 +1,3 @@
 {
-  "/page": "app/page.js",
-  "/shutdown/page": "app/shutdown/page.js",
-  "/logout/page": "app/logout/page.js"
+  "/page": "app/page.js"
 }

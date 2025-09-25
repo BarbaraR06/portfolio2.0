@@ -87,7 +87,7 @@ export default function Home() {
        
        */Icons/*
       <div className="ml-4 md:ml-0 mt-6 relative z-10">
-        <div className="grid grid-cols-2 grid-rows-3 w-1/5 md:w-1/5 text-defaultText">
+        <div className="grid grid-cols-2 grid-rows-3 w-2/5 md:w-1/5 text-defaultText gap-4">
           {[
             { component: <Education />, key: "Education", label: t("education") },
             { component: <Work />, key: "Work", label: t("work") },
