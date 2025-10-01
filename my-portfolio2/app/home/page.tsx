@@ -24,6 +24,7 @@ import BehanceModal from "@/components/modals/behance";
 import ProjectsModal from "@/components/modals/projects";
 import TransitionOverlay from "@/components/TransitionOverlay";
 import Footer from "@/app/footer";
+import { useClickSound } from "../buttonSound/page";
 
 export default function Home() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -31,6 +32,8 @@ export default function Home() {
   const [minimizedTabs, setMinimizedTabs] = useState<string[]>([]);
   const [iconsInFooter, setIconsInFooter] = useState<string[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const clickSound = useClickSound();
 
   const { t } = useTranslation("home");
 
@@ -110,8 +113,10 @@ export default function Home() {
               onClick={(e) => {
                 e.stopPropagation();
                 handleClick(item.key);
+                clickSound();
               }}
               onDoubleClick={() => handleDoubleClick(item.key)}
+              
             >
               <div className="flex flex-col items-center justify-center w-full text-center">
                 {item.component}
