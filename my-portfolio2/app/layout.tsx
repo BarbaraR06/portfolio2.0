@@ -1,7 +1,6 @@
 import "@/styles/globals.css";
 import clsx from "clsx";
 import { Yomogi as YomogiFont } from "next/font/google";
-import { Cherry_Bomb_One } from "next/font/google";
 
 import { Providers } from "./providers";
 
@@ -14,12 +13,6 @@ const Yomogi = YomogiFont({
   variable: "--font-yomogi",
 });
 
-const Cherry_Bomb = Cherry_Bomb_One({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-cherry-bomb",
-});
-
 export default function RootLayout({
   children,
 }: {
@@ -30,8 +23,18 @@ export default function RootLayout({
       <head>
         <title>Barbie's Portfolio</title>
         <link href="/bunny.ico" rel="icon" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className={clsx(Yomogi.variable, Cherry_Bomb.variable)}>
+      <body className={clsx(Yomogi.variable)}>
         <I18nClientProvider>
           <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
             <TransitionOverlay isActive={false} />

@@ -24,7 +24,7 @@ import BehanceModal from "@/components/modals/behance";
 import ProjectsModal from "@/components/modals/projects";
 import TransitionOverlay from "@/components/TransitionOverlay";
 import Footer from "@/app/footer";
-import { useClickSound } from "../buttonSound/page";
+import { useClickSound } from "@/hooks/click";
 
 export default function Home() {
   const [selected, setSelected] = useState<string | null>(null);
