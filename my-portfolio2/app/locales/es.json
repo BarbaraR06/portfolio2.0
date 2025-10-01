@@ -5,7 +5,7 @@
     "about": "Sobre mí",
     "email": "Correo",
     "github": "Github",
-    "resume": "Currículum",
+    "resume": "Currículum.pdf",
     "game": "Juego",
     "spotify": "Spotify",
     "behance": "Behance",
@@ -23,6 +23,9 @@
   "shutdown": {
     "shakeMouse": "Mueve el mouse para despertar",
     "orClick": "o haz clic para despertar"
+  },
+  "transition": {
+    "loading": "Cargando..."
   },
   "login": {
     "welcome": "Bienvenida!",

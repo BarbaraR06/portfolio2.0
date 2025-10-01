@@ -22,9 +22,10 @@ export default function LogoutPage() {
   const handleEnter = () => {
     setIsTransitioning(true);
     setTimeout(() => {
-      router.push("/");
-    }, 500);
+      router.push("/home");
+    }, 1200);
   };
+
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -36,15 +37,6 @@ export default function LogoutPage() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
-
-
-  const timerId = setInterval(() => {
-    setCurrentTime(new Date());
-  }, 1000);
-
-  useEffect(() => {
-    return () => clearInterval(timerId);
   }, []);
 
   const formatTime = (date: Date) => {
@@ -76,41 +68,41 @@ export default function LogoutPage() {
   const formatted = formatTime(currentTime);
 
   return (
-    <div
-      className={`fixed inset-0 flex-col w-screen h-screen flex items-center justify-center bg-[#29BEF2]`}
-    >
-       <img
-        src="/cloud1.svg"
-        alt="Cloud 1"
-        className="absolute top-[5%] left-[-20%] w-[600px] animate-cloud1"
-      />
-      <img
-        src="/cloud2.svg"
-        alt="Cloud 2"
-        className="absolute top-[25%] right-[-20%] w-[800px] animate-cloud2"
-      />
-      <img
-        src="/cloud3.svg"
-        alt="Cloud 3"
-        className="absolute top-[50%] left-[-25%] w-[900px] animate-cloud3"
-      />
-      <img
-        src="/cloud4.svg"
-        alt="Cloud 4"
-        className="absolute top-[70%] right-[-25%] w-[1000px] animate-cloud4"
-      />
-      <TransitionOverlay isActive={isTransitioning} />
-      <div className="login-container bg-white/40 backdrop-blur-lg rounded-xl flex flex-col items-center fadeIn max-w-sm p-12 gap-4">
-        <p className="text-cvs-rose text-3xl font-mono mt-4">{formatted.date}</p>
-        <p className="text-cvs-rose text-5xl font-mono mt-2">{formatted.hours}</p>
-        <p className="text-cvs-rose text-4xl font-mono opacity-80 -mt-2">
-          {formatted.minutes}
-        </p>
+    <section className="font-yomogi fixed inset-0 w-screen h-screen bg-[url('/logoutbg.svg')] bg-no-repeat bg-cover bg-center overflow-hidden">
+      
+      <div className="relative w-full h-full flex flex-col items-center justify-center">
+        <img
+          src="/cloud1.svg"
+          alt="Cloud 1"
+          className="absolute top-[5%] left-[-20%] w-[600px] animate-cloud1"
+        />
+        <img
+          src="/cloud2.svg"
+          alt="Cloud 2"
+          className="absolute top-[25%] right-[-20%] w-[800px] animate-cloud2"
+        />
+        <img
+          src="/cloud3.svg"
+          alt="Cloud 3"
+          className="absolute top-[50%] left-[-25%] w-[900px] animate-cloud3"
+        />
+        <img
+          src="/cloud4.svg"
+          alt="Cloud 4"
+          className="absolute top-[70%] right-[-25%] w-[1000px] animate-cloud4"
+        />
+        <TransitionOverlay isActive={isTransitioning} />
+        <div className="login-container bg-white/40 backdrop-blur-lg rounded-xl flex flex-col items-center fadeIn max-w-sm p-12 gap-4">
+          <p className="text-white text-3xl font-mono ">{formatted.date}</p>
+          <p className="text-white text-5xl font-mono mt-2">
+            {formatted.hours}
+          </p>
+          <p className="text-white text-4xl font-mono opacity-80 -mt-2">
+            {formatted.minutes}
+          </p>
+        </div>
+        <p className=" text-white animate-pulse mt-4"> Press space to enter</p>
       </div>
-      <p className=" text-white animate-pulse mt-4">
-        {" "}
-        Press space to enter
-      </p>
-    </div>
+    </section>
   );
 }

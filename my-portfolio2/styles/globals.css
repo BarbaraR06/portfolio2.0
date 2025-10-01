@@ -16,6 +16,10 @@ body {
   color: rgb(var(--foreground-rgb));
 }
 
+html, body {
+  cursor: url('/cursor.svg') 6 6, auto;
+}
+
 @layer utilities {
   .custom-scrollbar {
     scrollbar-width: thin;
@@ -128,8 +132,5 @@ body {
   }
 
 }
-
-
-
 
 

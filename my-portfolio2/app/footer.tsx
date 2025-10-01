@@ -60,9 +60,7 @@ export default function Footer({
         <div className="flex">
           <img
             alt="Home cat icon"
-            className={`w-14 h-14 xl:w-15 xl:h-15 p-2 cursor-pointer hover:bg-[#552445] 
-    transition-opacity duration-800 ease-in-out
-    ${!isMenuOpen ? "animate-fade-in-out" : ""}`}
+            className="w-14 h-14 xl:w-15 xl:h-15 p-2 cursor-pointer hover:bg-[#552445] "
             src="/cat.svg"
             onClick={toggleMenu}
           />
