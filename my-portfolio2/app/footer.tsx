@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 
 import LanguageSwitcher from "@/components/languageSwitcher";
+import WeatherFooter from "@/components/weather";
 import Clock from "./clock";
 
 type FooterProps = {
@@ -65,8 +66,21 @@ export default function Footer({
             onClick={toggleMenu}
           />
         </div>
-        {isMenuOpen && (
-          <div className="text-defaultText font-bold absolute bottom-[3.5rem] left-0 bg-cvs-rose flex flex-col items-center w-1/2 md:w-1/6 rounded-tr-lg">
+        <div
+          className={
+            `text-defaultText font-bold absolute bottom-[3.5rem] left-0 bg-cvs-rose flex flex-col items-center w-1/2 md:w-1/6 rounded-tr-lg ` +
+            `origin-bottom transform transition-transform duration-900 ease-in-out ` +
+            (isMenuOpen
+              ? "scale-y-100 delay-0"
+              : "delay-250 scale-y-0 pointer-events-none")
+          }
+        >
+          <div
+            className={
+              `w-full flex flex-col items-center transition-opacity duration-500 ease-out ` +
+              (isMenuOpen ? "opacity-100 delay-700" : "opacity-0 delay-0")
+            }
+          >
             <button
               className="hover:bg-[#e3cadb] w-[95%] text-left p-2 mt-4 rounded-sm"
               onClick={handleShutdown}
@@ -80,7 +94,7 @@ export default function Footer({
               {t("logout")}
             </button>
           </div>
-        )}
+        </div>
         <div className="flex">
           {iconsInFooter.map((tab) => (
             <button
@@ -94,6 +108,7 @@ export default function Footer({
         </div>
       </div>
       <div className="flex items-center">
+        <WeatherFooter />
         <LanguageSwitcher />
         <Clock />
       </div>
