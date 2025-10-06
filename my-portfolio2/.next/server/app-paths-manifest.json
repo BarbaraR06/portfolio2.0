@@ -1,3 +1,5 @@
 {
-  "/home/page": "app/home/page.js"
+  "/not-found": "app/not-found.js",
+  "/home/page": "app/home/page.js",
+  "/api/weather/route": "app/api/weather/route.js"
 }
