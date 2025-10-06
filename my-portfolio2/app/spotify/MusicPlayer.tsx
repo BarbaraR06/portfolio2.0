@@ -3,9 +3,14 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const SPOTIFY_PLAYER_NAME = "Portfolio Web Player";
-const PLAYLIST_URI = "spotify:playlist:1u4F50HA53L3Jwxbnk9IeO"; 
+const PLAYLIST_URI = "spotify:playlist:1u4F50HA53L3Jwxbnk9IeO";
 
-export default function MusicPlayer() {
+interface MusicPlayerProps {
+  onClose?: () => void;
+  onMinimize?: () => void;
+}
+
+export default function MusicPlayer({ onClose, onMinimize }: MusicPlayerProps) {
   //estados para controlar el player
   const { t } = useTranslation("music-player");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -213,9 +218,7 @@ export default function MusicPlayer() {
   // UI mientras se carga o si no está autenticado
   if (loading)
     return (
-      <div className="w-72 rounded-lg bg-[#e3b1d2] p-4">
-        {t("loading")}
-      </div>
+      <div className="w-72 rounded-lg bg-[#e3b1d2] p-4">{t("loading")}</div>
     );
 
   if (!isAuthenticated) {
@@ -237,17 +240,49 @@ export default function MusicPlayer() {
       onClick={() => isMinimized && setIsMinimized(false)}
     >
       {isMinimized ? (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="w-full h-full flex items-center justify-center relative">
           <img
             alt={currentTrack?.name || "Current track"}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-lg"
             src={
               currentTrack?.album?.images[0]?.url || "/music/default-cover.jpg"
             }
           />
+          <button
+            className="absolute top-1 right-1 w-6 h-6"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose?.();
+            }}
+          >
+            <img src="/close.svg" alt="Cerrar" />
+          </button>
         </div>
       ) : (
-        <div className="p-4">
+        <div className="p-4 relative">
+          <div className="absolute top-2 right-2 flex space-x-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMinimized(true);
+                onMinimize?.();
+              }}
+              className="w-6 h-6"
+              aria-label={t("minimize")}
+            >
+              <img src="/min.svg" alt="Minimizar" />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose?.();
+              }}
+              className="w-6 h-6"
+              aria-label={t("close")}
+            >
+              <img src="/close.svg" alt="Cerrar" />
+            </button>
+          </div>
           {/* nombre de la canción y botón minimizar */}
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-white font-semibold truncate flex-1">
@@ -257,21 +292,7 @@ export default function MusicPlayer() {
               aria-label={t("minimize")}
               className="text-white hover:text-cvs-lightBlue transition-colors"
               onClick={() => setIsMinimized(true)}
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M19 9l-7 7-7-7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                />
-              </svg>
-            </button>
+            ></button>
           </div>
           {/* info del track actual y control de volumen */}
           <div className="flex items-center mb-4">

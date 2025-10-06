@@ -51,6 +51,8 @@ const nextConfig = {
     NEXT_PUBLIC_SPOTIFY_REDIRECT_URI:
       process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    // Expose OpenWeather API key for the weather widget in the client
+    NEXT_PUBLIC_OPENWEATHER_KEY: process.env.NEXT_PUBLIC_OPENWEATHER_KEY,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },

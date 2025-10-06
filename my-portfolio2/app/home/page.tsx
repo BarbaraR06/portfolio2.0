@@ -9,7 +9,7 @@ import Resume from "../resume";
 import Github from "../github";
 import AboutMe from "../about-me";
 import Spotify from "../spotify";
-import Behance from "../behance"
+import Behance from "../behance";
 import Projects from "@/projects";
 
 import Modal from "@/components/modal";
@@ -25,6 +25,7 @@ import ProjectsModal from "@/components/modals/projects";
 import TransitionOverlay from "@/components/TransitionOverlay";
 import Footer from "@/app/footer";
 import { useClickSound } from "@/hooks/click";
+import MusicPlayer from "@/app/spotify/MusicPlayer";
 
 export default function Home() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -32,6 +33,7 @@ export default function Home() {
   const [minimizedTabs, setMinimizedTabs] = useState<string[]>([]);
   const [iconsInFooter, setIconsInFooter] = useState<string[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
 
   const clickSound = useClickSound();
 
@@ -42,9 +44,17 @@ export default function Home() {
   };
 
   const handleDoubleClick = (key: string) => {
-    setOpenTab(key);
-    setIconsInFooter((prev) => (!prev.includes(key) ? [...prev, key] : prev));
-    setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
+    if (key === "Spotify") {
+      // Abrir MusicPlayer directamente
+      setOpenTab(null); // no queremos abrir un modal
+      setIconsInFooter((prev) => (!prev.includes(key) ? [...prev, key] : prev));
+      // Usamos otro estado para controlar si MusicPlayer se muestra
+      setIsMusicPlayerOpen(true);
+    } else {
+      setOpenTab(key);
+      setIconsInFooter((prev) => (!prev.includes(key) ? [...prev, key] : prev));
+      setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
+    }
   };
 
   const handleMinimizeTab = (key: string) => {
@@ -55,13 +65,22 @@ export default function Home() {
 
   const handleRestoreTab = (key: string) => {
     setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
-    setOpenTab(key);
+    if (key === "Spotify") {
+      // Restaurar el reproductor de música en lugar de abrir un modal vacío
+      setIsMusicPlayerOpen(true);
+      setOpenTab(null);
+    } else {
+      setOpenTab(key);
+    }
   };
 
   const handleCloseTab = (key: string) => {
     setOpenTab(null);
     setIconsInFooter((prev) => prev.filter((tab) => tab !== key));
     setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
+    if (key === "Spotify") {
+      setIsMusicPlayerOpen(false);
+    }
   };
 
   const modalComponents: Record<string, React.ReactNode> = {
@@ -70,12 +89,19 @@ export default function Home() {
     AboutMe: <AboutMeModal />,
     Email: <EmailModal />,
     Github: <GithubModal />,
-    Spotify: <SpotifyModal />,
+    Spotify: (
+      <SpotifyModal
+        onDoubleClick={() => {
+          setIsMusicPlayerOpen(true);
+          handleCloseTab("Spotify");
+        }}
+      />
+    ),
     Behance: <BehanceModal />,
     Projects: <ProjectsModal />,
     Resume: (
       <ResumeModal isOpen={true} onClose={() => handleCloseTab("Resume")} />
-    ),  
+    ),
   };
 
   return (
@@ -83,16 +109,28 @@ export default function Home() {
       className="min-h-[100dvh] relative overflow-hidden font-yomogi"
       onClick={() => setSelected(null)}
     >
-      <div className="fixed inset-0 bg-mesh-gradient-vertical bg-cover bg-center" /> //background
-      <div className="fixed inset-0 bg-grid-pattern bg-grid-size opacity-50" /> //background
-
+      <div className="fixed inset-0 bg-mesh-gradient-vertical bg-cover bg-center" />{" "}
+      //background
+      <div className="fixed inset-0 bg-grid-pattern bg-grid-size opacity-50" />{" "}
+      //background
       <TransitionOverlay isActive={isTransitioning} />
-       
-       */Icons/*
+      {isMusicPlayerOpen && (
+        <div className="fixed left-[60%] z-50">
+          <MusicPlayer
+            onClose={() => setIsMusicPlayerOpen(false)}
+            onMinimize={() => setIsMusicPlayerOpen(false)}
+          />
+        </div>
+      )}
+      */Icons/*
       <div className="ml-4 md:ml-0 mt-6 relative z-10">
         <div className="grid grid-cols-2 grid-rows-3 w-2/5 md:w-1/5 text-defaultText gap-4">
           {[
-            { component: <Education />, key: "Education", label: t("education") },
+            {
+              component: <Education />,
+              key: "Education",
+              label: t("education"),
+            },
             { component: <Work />, key: "Work", label: t("work") },
             { component: <AboutMe />, key: "AboutMe", label: t("about") },
             { component: <Email />, key: "Email", label: t("email") },
@@ -116,7 +154,6 @@ export default function Home() {
                 clickSound();
               }}
               onDoubleClick={() => handleDoubleClick(item.key)}
-              
             >
               <div className="flex flex-col items-center justify-center w-full text-center">
                 {item.component}
@@ -128,7 +165,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-
       {openTab && !minimizedTabs.includes(openTab) && (
         <Modal
           title={t(openTab)}

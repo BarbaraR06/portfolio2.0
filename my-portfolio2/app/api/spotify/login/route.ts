@@ -15,7 +15,6 @@ export async function GET() {
     redirectUri: redirectUri ? "present" : "missing",
   });
 
-  // validación de variables de entorno
   if (!clientId || !redirectUri) {
     return NextResponse.json(
       { error: "Missing required environment variables" },
