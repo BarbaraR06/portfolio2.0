@@ -26,6 +26,7 @@ import TransitionOverlay from "@/components/TransitionOverlay";
 import Footer from "@/app/footer";
 import { useClickSound } from "@/hooks/click";
 import MusicPlayer from "@/app/spotify/MusicPlayer";
+import SpotifyLogin from "@/components/modals/spotify-login";
 
 export default function Home() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -34,8 +35,10 @@ export default function Home() {
   const [iconsInFooter, setIconsInFooter] = useState<string[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
+  const [isSpotifyLoginOpen, setIsSpotifyLoginOpen] = useState(false);
 
   const clickSound = useClickSound();
+  const [isAuthenticated] = useState(false);
 
   const { t } = useTranslation("home");
 
@@ -45,10 +48,15 @@ export default function Home() {
 
   const handleDoubleClick = (key: string) => {
     if (key === "Spotify") {
-      // Abrir MusicPlayer directamente
-      setOpenTab(null); // no queremos abrir un modal
+      if (!isAuthenticated) {
+        // 👉 abrir el modal de login
+        setIsSpotifyLoginOpen(true);
+        return;
+      }
+
+      // Si está autenticado, abrir el reproductor como antes
+      setOpenTab(null);
       setIconsInFooter((prev) => (!prev.includes(key) ? [...prev, key] : prev));
-      // Usamos otro estado para controlar si MusicPlayer se muestra
       setIsMusicPlayerOpen(true);
     } else {
       setOpenTab(key);
@@ -100,7 +108,11 @@ export default function Home() {
     Behance: <BehanceModal />,
     Projects: <ProjectsModal />,
     Resume: (
-      <ResumeModal isOpen={true} onClose={() => handleCloseTab("Resume")} />
+      <ResumeModal
+        isOpen={true}
+        onClose={() => handleCloseTab("Resume")}
+        onMinimize={() => handleMinimizeTab("Resume")}
+      />
     ),
   };
 
@@ -117,8 +129,8 @@ export default function Home() {
       {isMusicPlayerOpen && (
         <div className="fixed left-[60%] z-50">
           <MusicPlayer
-            onClose={() => setIsMusicPlayerOpen(false)}
-            onMinimize={() => setIsMusicPlayerOpen(false)}
+            onClose={() => handleCloseTab("Spotify")}
+            onMinimize={() => handleMinimizeTab("Spotify")}
           />
         </div>
       )}
@@ -173,6 +185,13 @@ export default function Home() {
         >
           {modalComponents[openTab] || null}
         </Modal>
+      )}
+      {isSpotifyLoginOpen && (
+        <SpotifyLogin
+          isOpen={isSpotifyLoginOpen}
+          onClose={() => setIsSpotifyLoginOpen(false)}
+          onMinimize={() => setIsSpotifyLoginOpen(false)}
+        />
       )}
       <Footer
         iconsInFooter={iconsInFooter}

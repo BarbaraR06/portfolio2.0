@@ -38,9 +38,10 @@
     "next": "Next song",
     "play": "Play",
     "pause": "Pause",
-    "login_with_spotify": "Login with Spotify", 
+    "login_with_spotify": "Do you want to login with Spotify?", 
     "login_spotify": "Login",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "cancel": "Cancel"
   },
   "resume": {
     "title": "Resume",

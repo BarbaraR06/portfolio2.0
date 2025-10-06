@@ -38,9 +38,10 @@
     "next": "Siguiente canción",
     "play": "Reproducir",
     "pause": "Pausar", 
-    "login_with_spotify": "Iniciar sesión con Spotify",
+    "login_with_spotify": "¿Quieres iniciar sesión con Spotify?",
     "login_spotify": "Iniciar sesión",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "cancel": "Cancelar"
   },
   "resume": {
     "title": "Curriculum",

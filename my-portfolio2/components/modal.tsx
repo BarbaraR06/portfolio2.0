@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
 
 type ModalProps = {
-  title: string;
   onMinimize: () => void;
+  isOpen?: boolean;
   onClose: () => void;
+  title: string;
   children: React.ReactNode;
 };
 

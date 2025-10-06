@@ -3,11 +3,14 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "@/components/modal";
 import { CV_FILE } from "@/config/constants";
+
 type ResumeModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  onMinimize: () => void;
 };
-export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
+
+export default function ResumeModal({ isOpen, onClose, onMinimize }: ResumeModalProps) {
   const { t } = useTranslation("resume");
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -25,8 +28,8 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
   if (!isOpen) return null;
   return (
-    <Modal title={t("title")} onClose={onClose} onMinimize={() => {}}>
-      <p className="text-center mt-10 text-xl text-defaultText">{t("download")}</p>
+    <Modal title={t("title")} onClose={onClose} onMinimize={onMinimize}>
+      <p className="text-center mt-4 text-xl text-defaultText">{t("download")}</p>
       <div className="flex gap-4 mt-10 justify-center font-bold text-defaultText">
         <button
           className="bg-cvs-lightBlue px-4 py-2 rounded hover:bg-cvs-darkBlue hover:text-white w-full uppercase"

@@ -1,4 +1,5 @@
 "use client";
+import SpotifyLogin from "@/components/modals/spotify-login";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +9,7 @@ const PLAYLIST_URI = "spotify:playlist:1u4F50HA53L3Jwxbnk9IeO";
 interface MusicPlayerProps {
   onClose?: () => void;
   onMinimize?: () => void;
+  isOpen?: boolean;
 }
 
 export default function MusicPlayer({ onClose, onMinimize }: MusicPlayerProps) {
@@ -221,18 +223,6 @@ export default function MusicPlayer({ onClose, onMinimize }: MusicPlayerProps) {
       <div className="w-72 rounded-lg bg-[#e3b1d2] p-4">{t("loading")}</div>
     );
 
-  if (!isAuthenticated) {
-    return (
-      <div className="w-72 rounded-lg p-4 flex items-center">
-        <a
-          href="/api/spotify/login"
-          className="bg-[#e3b1d2] text-white px-4 py-2 rounded hover:bg-[#8a4f76] transition"
-        >
-          {t("login_with_spotify")}
-        </a>
-      </div>
-    );
-  }
 
   return (
     <div

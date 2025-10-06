@@ -1,4 +1,4 @@
-import MusicPlayer from "@/app/spotify/MusicPlayer";
+
 
 export default function SpotifyModal({
   onDoubleClick,

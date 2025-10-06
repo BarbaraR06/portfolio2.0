@@ -7,7 +7,7 @@ function generateRandomString(length: number): string {
 }
 
 export async function GET() {
-  const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+  const clientId = process.env.SPOTIFY_CLIENT_ID;
   const redirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
 
   console.log("[Spotify Login] Starting login process", {
