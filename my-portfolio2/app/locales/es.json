@@ -41,7 +41,8 @@
     "login_with_spotify": "¿Quieres iniciar sesión con Spotify?",
     "login_spotify": "Iniciar sesión",
     "loading": "Cargando...",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar", 
+    "title": "Reproductor de música"
   },
   "resume": {
     "title": "Curriculum",

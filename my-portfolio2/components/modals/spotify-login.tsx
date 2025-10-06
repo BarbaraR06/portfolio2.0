@@ -16,7 +16,7 @@ export default function SpotifyLogin({ onClose, onMinimize }: ModalProps) {
   return (
     <>
       <Modal
-        title="Conexión con Spotify"
+        title={t("title")}
         onClose={onClose}
         onMinimize={onMinimize}
       >

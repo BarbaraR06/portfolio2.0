@@ -41,7 +41,8 @@
     "login_with_spotify": "Do you want to login with Spotify?", 
     "login_spotify": "Login",
     "loading": "Loading...",
-    "cancel": "Cancel"
+    "cancel": "Cancel", 
+    "title": "Music Player"
   },
   "resume": {
     "title": "Resume",
