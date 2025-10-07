@@ -131,8 +131,8 @@ export default function Home() {
         </div>
       )}
       */Icons/*
-      <div className="mb-2 mt-2 relative">
-        <div className="relative flex flex-wrap justify-left gap-2 max-w-[300px] text-defaultText">
+      <div className="relative">
+        <div className="grid grid-cols-2 gap-4 w-full max-w-[400px] text-defaultText ">
           {[
             {
               component: <Education />,
