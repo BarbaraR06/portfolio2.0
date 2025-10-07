@@ -20,13 +20,14 @@ export default function LogoutPage() {
   }, []);
 
   const handleEnter = () => {
+    if(isTransitioning) return;
     setIsTransitioning(true);
     setTimeout(() => {
       router.push("/home");
     }, 1200);
   };
 
-
+//efecto para desktop
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
@@ -37,6 +38,23 @@ export default function LogoutPage() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
+  }, []);
+
+  //efecto para mobile
+
+  useEffect(() => {
+  const handleTouchOrClick = () => {
+    handleEnter();
+  };
+  if("ontouchstart" in window || navigator.maxTouchPoints > 0) {
+    window.addEventListener("touchstart", handleTouchOrClick);
+    document.addEventListener("click", handleTouchOrClick);
+  }
+
+  return () => {
+    document.removeEventListener("touchstart", handleTouchOrClick);
+    document.removeEventListener("click", handleTouchOrClick);
+  };
   }, []);
 
   const formatTime = (date: Date) => {
@@ -101,7 +119,7 @@ export default function LogoutPage() {
             {formatted.minutes}
           </p>
         </div>
-        <p className=" text-white animate-pulse mt-4"> Press space to enter</p>
+        <p className=" text-white animate-pulse mt-4"> Press space or tap to enter</p>
       </div>
     </section>
   );
