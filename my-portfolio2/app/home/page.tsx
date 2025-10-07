@@ -49,12 +49,9 @@ export default function Home() {
   const handleDoubleClick = (key: string) => {
     if (key === "Spotify") {
       if (!isAuthenticated) {
-        // 👉 abrir el modal de login
         setIsSpotifyLoginOpen(true);
         return;
       }
-
-      // Si está autenticado, abrir el reproductor como antes
       setOpenTab(null);
       setIconsInFooter((prev) => (!prev.includes(key) ? [...prev, key] : prev));
       setIsMusicPlayerOpen(true);
@@ -74,7 +71,6 @@ export default function Home() {
   const handleRestoreTab = (key: string) => {
     setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
     if (key === "Spotify") {
-      // Restaurar el reproductor de música en lugar de abrir un modal vacío
       setIsMusicPlayerOpen(true);
       setOpenTab(null);
     } else {
@@ -135,8 +131,8 @@ export default function Home() {
         </div>
       )}
       */Icons/*
-      <div className="ml-4 md:ml-0 mt-6 relative z-10">
-        <div className="grid grid-cols-2 grid-rows-3 w-2/5 md:w-1/5 text-defaultText gap-4">
+      <div className="mb-2 mt-2 relative">
+        <div className="relative flex flex-wrap justify-left gap-2 max-w-[300px] text-defaultText">
           {[
             {
               component: <Education />,
@@ -144,13 +140,13 @@ export default function Home() {
               label: t("education"),
             },
             { component: <Work />, key: "Work", label: t("work") },
-            { component: <AboutMe />, key: "AboutMe", label: t("about") },
             { component: <Email />, key: "Email", label: t("email") },
+            { component: <Projects />, key: "Projects", label: t("projects") },
             { component: <Github />, key: "Github", label: t("github") },
             { component: <Resume />, key: "Resume", label: t("resume") },
             { component: <Spotify />, key: "Spotify", label: t("spotify") },
             { component: <Behance />, key: "Behance", label: t("behance") },
-            { component: <Projects />, key: "Projects", label: t("projects") },
+            { component: <AboutMe />, key: "AboutMe", label: t("about") },
           ].map((item) => (
             <div
               key={item.key}
