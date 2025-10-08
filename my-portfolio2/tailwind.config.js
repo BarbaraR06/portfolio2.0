@@ -9,9 +9,6 @@ const config = {
   ],
   theme: {
     extend: {
-      transitionDuration: {
-        900: "900ms",
-      },
       fontFamily: {
         yomogi: ["var(--font-yomogi)", "sans-serif"],
         cherry: ["var(--font-cherry-bomb)", "cursive"],

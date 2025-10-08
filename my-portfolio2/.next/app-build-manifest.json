@@ -16,10 +16,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/error.js"
     ],
-    "/not-found": [
+    "/logout/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
+      "static/chunks/app/logout/page.js"
     ]
   }
 }

@@ -1,6 +1,4 @@
 {
-  "/not-found": "app/not-found.js",
   "/home/page": "app/home/page.js",
-  "/api/weather/route": "app/api/weather/route.js",
-  "/api/spotify/token/route": "app/api/spotify/token/route.js"
+  "/logout/page": "app/logout/page.js"
 }
