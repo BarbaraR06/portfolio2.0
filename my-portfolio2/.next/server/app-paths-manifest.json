@@ -1,7 +1,6 @@
 {
   "/page": "app/page.js",
   "/home/page": "app/home/page.js",
-  "/logout/page": "app/logout/page.js",
-  "/shutdown/page": "app/shutdown/page.js",
-  "/api/weather/route": "app/api/weather/route.js"
+  "/api/weather/route": "app/api/weather/route.js",
+  "/api/spotify/login/route": "app/api/spotify/login/route.js"
 }
