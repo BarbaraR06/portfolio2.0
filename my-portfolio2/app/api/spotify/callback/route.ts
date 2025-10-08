@@ -41,9 +41,9 @@ export async function GET(request: Request) {
         tokenData.error_description || "Failed to get access token"
       );
 
-    // redirección al frontend después del login a /home
+    // redirección al frontend después del login a /home con flag para auto-abrir
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
-    const res = NextResponse.redirect(new URL("/home", baseUrl));
+    const res = NextResponse.redirect(new URL("/home?spotify=1", baseUrl));
     // eliminar la cookie de estado temporal
     res.cookies.set("spotify_auth_state", "", { path: "/", maxAge: 0 });
 

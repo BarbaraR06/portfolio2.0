@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import Education from "../education";
@@ -41,6 +42,19 @@ export default function Home() {
   const [isAuthenticated] = useState(false);
 
   const { t } = useTranslation("home");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Auto-abrir el reproductor al volver de Spotify (/home?spotify=1)
+  useEffect(() => {
+    const shouldOpen = searchParams?.get("spotify") === "1";
+    if (!shouldOpen) return;
+
+    setIsMusicPlayerOpen(true);
+    setIconsInFooter((prev) => (prev.includes("Spotify") ? prev : [...prev, "Spotify"]));
+    // Limpia el query param de la URL
+    router.replace("/home");
+  }, [searchParams, router]);
 
   const handleClick = (key: string) => {
     setSelected((prev) => (prev === key ? null : key));
