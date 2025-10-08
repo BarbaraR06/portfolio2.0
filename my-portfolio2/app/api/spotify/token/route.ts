@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 
-const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
 export async function GET(request: Request) {
+  console.log("[Spotify Token] CLIENT_ID:", process.env.SPOTIFY_CLIENT_ID);
+  console.log("[Spotify Token] CLIENT_SECRET:", process.env.SPOTIFY_CLIENT_SECRET);
+
   const cookieHeader = request.headers.get('cookie') || '';
   const cookies = Object.fromEntries(
     cookieHeader.split('; ').map(cookie => {

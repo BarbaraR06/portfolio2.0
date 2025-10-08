@@ -28,6 +28,7 @@ import Footer from "@/app/footer";
 import { useClickSound } from "@/hooks/click";
 import MusicPlayer from "@/app/spotify/MusicPlayer";
 import SpotifyLogin from "@/components/modals/spotify-login";
+import { useSpotify } from "@/hooks/useSpotify";
 
 export default function Home() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -37,9 +38,9 @@ export default function Home() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
   const [isSpotifyLoginOpen, setIsSpotifyLoginOpen] = useState(false);
+  const { accessToken, isAuthenticated, loading } = useSpotify();
 
   const clickSound = useClickSound();
-  const [isAuthenticated] = useState(false);
 
   const { t } = useTranslation("home");
   const router = useRouter();

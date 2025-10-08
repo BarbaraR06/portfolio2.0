@@ -1,7 +1,7 @@
 "use client";
-import SpotifyLogin from "@/components/modals/spotify-login";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useSpotify } from "@/hooks/useSpotify";
 
 const SPOTIFY_PLAYER_NAME = "Portfolio Web Player";
 const PLAYLIST_URI = "spotify:playlist:1u4F50HA53L3Jwxbnk9IeO";
@@ -15,75 +15,33 @@ interface MusicPlayerProps {
 export default function MusicPlayer({ onClose, onMinimize }: MusicPlayerProps) {
   //estados para controlar el player
   const { t } = useTranslation("music-player");
+  const { accessToken, isAuthenticated, loading } = useSpotify();
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [isMinimized, setIsMinimized] = useState(false);
   const [player, setPlayer] = useState<any>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
 
   // Verifica si hay token válido disponible
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    async function checkToken() {
-      try {
-        const response = await fetch("/api/spotify/token");
-        const data = await response.json();
-        console.log(
-          "[MusicPlayer] Token available:",
-          data.access_token ? "yes" : "no"
-        );
-
-        if (response.ok && data.access_token) {
-          setAccessToken(data.access_token);
-          setIsAuthenticated(true);
-          setLoading(false);
-        } else {
-          console.log("[MusicPlayer] no token available");
-          setIsAuthenticated(false);
-          setAccessToken(null);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("[MusicPlayer] error checking token:", error);
-        setIsAuthenticated(false);
-        setAccessToken(null);
-        setLoading(false);
-      }
-    }
-
-    checkToken();
-    const interval = setInterval(checkToken, 30_000); // vuelve a verificar cada 30 segundos
-    return () => clearInterval(interval);
-  }, []);
-
-  // carga e inicia el SDK si está autenticado
-  useEffect(() => {
-    if (!isAuthenticated || !accessToken || typeof window === "undefined")
-      return;
+    if (!isAuthenticated || !accessToken || typeof window === "undefined") return;
 
     if ((window as any).Spotify) {
       setupPlayer();
     } else {
-      // Carga el script del SDK si no está cargado
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
       script.async = true;
       document.body.appendChild(script);
-
-      // cuando el SDK está listo inicia el player
-      (window as any).onSpotifyWebPlaybackSDKReady = () => {
-        setupPlayer();
-      };
+      (window as any).onSpotifyWebPlaybackSDKReady = () => setupPlayer();
     }
   }, [isAuthenticated, accessToken]);
 
-  // configura el reproductor con el SDK de Spotify
-  function setupPlayer() {
+
+ function setupPlayer() {
     if (!accessToken || player) return;
 
     const spotifyPlayer = new (window as any).Spotify.Player({
@@ -99,131 +57,49 @@ export default function MusicPlayer({ onClose, onMinimize }: MusicPlayerProps) {
       setIsReady(true);
     });
 
-    spotifyPlayer.addListener("not_ready", () => setIsReady(false));
-
     spotifyPlayer.addListener("player_state_changed", (state: any) => {
       if (!state) return;
       setCurrentTrack(state.track_window.current_track);
       setIsPlaying(!state.paused);
     });
 
-    spotifyPlayer.addListener("initialization_error", ({ message }: any) => {
-      console.error("Initialization error:", message);
-    });
-
-    spotifyPlayer.addListener("authentication_error", ({ message }: any) => {
-      console.error("Authentication error:", message);
-      setIsAuthenticated(false);
-      setAccessToken(null);
-    });
-
-    spotifyPlayer.addListener("account_error", ({ message }: any) => {
-      console.error("Account error:", message);
-    });
-
     spotifyPlayer.connect();
   }
 
-  // reproduce la playlist cuando el player esté listo
   useEffect(() => {
     if (isReady && deviceId && isAuthenticated) {
       playPlaylist();
     }
   }, [isReady, deviceId, isAuthenticated]);
 
-  // llama API Spotify para reproducir la playlist
   async function playPlaylist() {
     if (!accessToken || !deviceId) return;
-
-    try {
-      const res = await fetch(
-        `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            context_uri: PLAYLIST_URI,
-            offset: { position: 0 },
-            position_ms: 0,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error(
-          `[MusicPlayer] error playing playlist: ${res.status} - ${errorText}`
-        );
-      } else {
-        setIsPlaying(true);
-      }
-    } catch (err) {
-      console.error("[MusicPlayer] error playing playlist:", err);
-    }
+    await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ context_uri: PLAYLIST_URI, offset: { position: 0 }, position_ms: 0 }),
+    });
+    setIsPlaying(true);
   }
 
-  // cambia el estado de reproducción play/pause
   const handlePlayPause = async () => {
-    if (!player || !accessToken) return;
-
-    try {
-      if (isPlaying) {
-        await player.pause();
-      } else {
-        await player.resume();
-      }
-      setIsPlaying(!isPlaying);
-    } catch (error) {
-      console.error("[MusicPlayer] error changing playback state:", error);
-    }
+    if (!player) return;
+    if (isPlaying) await player.pause();
+    else await player.resume();
+    setIsPlaying(!isPlaying);
   };
 
-  // cambia a la pista anterior
-  const handlePrevious = async () => {
-    if (!player || !accessToken) return;
-    try {
-      await player.previousTrack();
-    } catch (error) {
-      console.error(
-        "[MusicPlayer] Error switching to the previous track:",
-        error
-      );
-    }
-  };
+  const handlePrevious = async () => { if (player) await player.previousTrack(); };
+  const handleNext = async () => { if (player) await player.nextTrack(); };
 
-  // cambia a la siguiente pista
-  const handleNext = async () => {
-    if (!player || !accessToken) return;
-    try {
-      await player.nextTrack();
-    } catch (error) {
-      console.error("[MusicPlayer] Error switching to the next track:", error);
-    }
-  };
-
-  // cambia el volumen
-  const handleVolumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    if (player) {
-      try {
-        await player.setVolume(newVolume);
-      } catch (error) {
-        console.error("[MusicPlayer] error changing volume:", error);
-      }
-    }
+    if (player) player.setVolume(newVolume);
   };
 
-  // UI mientras se carga o si no está autenticado
-  if (loading)
-    return (
-      <div className="w-72 rounded-lg bg-[#e3b1d2] p-4">{t("loading")}</div>
-    );
-
-
+  if (loading) return <div>{t("loading")}</div>;
+  if (!isAuthenticated) return <div>{t("not_authenticated")}</div>;
   return (
     <div
       className={`transition-all duration-300 ease-in-out w-72 rounded-lg bg-[#e3b1d2] backdrop-blur-lg`}
