@@ -2,6 +2,7 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 import LanguageSwitcher from "@/components/languageSwitcher";
 import WeatherFooter from "@/components/weather";
@@ -58,7 +59,7 @@ export default function Footer({
   return (
     <footer className="flex justify-between bg-cvs-rose fixed bottom-0 w-full h-14 z-40">
       <div className="flex items-center">
-        <div className="flex"> 
+        <div className="flex">
           <img
             alt="Home cat icon"
             className="w-14 h-14 xl:w-15 xl:h-15 p-2 cursor-pointer hover:bg-[#552445] "
@@ -77,22 +78,28 @@ export default function Footer({
         >
           <div
             className={
-              `w-full flex flex-col items-center transition-opacity duration-500 ease-out ` +
+              `ml-10 w-full flex flex-col items-start transition-opacity duration-500 ease-out` +
               (isMenuOpen ? "opacity-100 delay-700" : "opacity-0 delay-0")
             }
           >
-            <button
-              className="hover:bg-[#e3cadb] w-[95%] text-left m-2 p-2 rounded-lg"
-              onClick={handleShutdown}
-            >
-              {t("shutdown")}
-            </button>
-            <button
-              className="hover:bg-[#e3cadb] w-[95%] text-left m-2 p-2 rounded-lg"
-              onClick={handleLogout}
-            >
-              {t("logout")}
-            </button>
+            <div className="flex justify-start items-center">
+              <Image alt="Shutdown icon" src="/shut-down.svg" width={24} height={24} />
+              <button
+                className="hover:bg-[#e3cadb] w-[95%] text-left m-2 p-2 rounded-lg"
+                onClick={handleShutdown}
+              >
+                {t("shutdown")}
+              </button>
+            </div>
+            <div className="flex justify-start items-center">
+              <Image alt="Logout icon" src="/logout.svg" width={24} height={24} />
+              <button
+                className="hover:bg-[#e3cadb] w-[95%] text-left m-2 p-2 rounded-lg"
+                onClick={handleLogout}
+              >
+                {t("logout")}
+              </button>
+            </div>
           </div>
         </div>
         <div className="flex ">

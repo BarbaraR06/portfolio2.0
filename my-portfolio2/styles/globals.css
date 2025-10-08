@@ -18,7 +18,6 @@ body {
 
 html, body {
   cursor: url('/cursor.svg') 6 6, auto;
-  
 }
 
 @layer utilities {
