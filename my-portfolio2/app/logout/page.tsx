@@ -86,7 +86,7 @@ export default function LogoutPage() {
   const formatted = formatTime(currentTime);
 
   return (
-    <section className="font-yomogi fixed inset-0 w-screen h-screen bg-[url('/logoutbg.svg')] bg-no-repeat bg-cover bg-center overflow-hidden">
+    <section className="font-yomogi fixed inset-0 w-screen h-screen bg-logout bg-no-repeat bg-cover bg-center overflow-hidden">
       
       <div className="relative w-full h-full flex flex-col items-center justify-center">
         <img

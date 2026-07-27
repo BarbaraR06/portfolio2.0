@@ -17,13 +17,19 @@ export async function GET(req: Request) {
 
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=es`;
 
-  try {
+ try {
     const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error("Error fetching weather");
+    
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error("Error de OpenWeather:", errorData);
+      return NextResponse.json({ error: "OpenWeather API Error", details: errorData }, { status: res.status });
+    }
+    
     const data = await res.json();
     return NextResponse.json(data);
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Weather API failed" }, { status: 500 });
+    console.error("Error interno:", err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
