@@ -20,14 +20,14 @@ export default function LogoutPage() {
   }, []);
 
   const handleEnter = () => {
-    if(isTransitioning) return;
+    if (isTransitioning) return;
     setIsTransitioning(true);
     setTimeout(() => {
       router.push("/home");
     }, 1200);
   };
 
-//efecto para desktop
+  //efecto para desktop
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
@@ -43,18 +43,18 @@ export default function LogoutPage() {
   //efecto para mobile
 
   useEffect(() => {
-  const handleTouchOrClick = () => {
-    handleEnter();
-  };
-  if("ontouchstart" in window || navigator.maxTouchPoints > 0) {
-    window.addEventListener("touchstart", handleTouchOrClick);
-    document.addEventListener("click", handleTouchOrClick);
-  }
+    const handleTouchOrClick = () => {
+      handleEnter();
+    };
+    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
+      window.addEventListener("touchstart", handleTouchOrClick);
+      document.addEventListener("click", handleTouchOrClick);
+    }
 
-  return () => {
-    document.removeEventListener("touchstart", handleTouchOrClick);
-    document.removeEventListener("click", handleTouchOrClick);
-  };
+    return () => {
+      document.removeEventListener("touchstart", handleTouchOrClick);
+      document.removeEventListener("click", handleTouchOrClick);
+    };
   }, []);
 
   const formatTime = (date: Date) => {
@@ -87,27 +87,31 @@ export default function LogoutPage() {
 
   return (
     <section className="font-yomogi fixed inset-0 w-screen h-screen bg-logout bg-no-repeat bg-cover bg-center overflow-hidden">
-      
       <div className="relative w-full h-full flex flex-col items-center justify-center">
         <img
-          src="/cloud1.svg"
+          src="/cloud1.png"
           alt="Cloud 1"
-          className="absolute top-[5%] left-[-20%] w-[600px] animate-cloud1"
+          className="absolute top-[5%] left-[-20%] w-[900px] animate-cloud1"
         />
         <img
-          src="/cloud2.svg"
+          src="/cloud2.png"
           alt="Cloud 2"
-          className="absolute top-[25%] right-[-20%] w-[800px] animate-cloud2"
+          className="absolute top-[10%] right-[-20%] w-[1800px] animate-cloud2"
         />
         <img
-          src="/cloud3.svg"
+          src="/cloud3.png"
           alt="Cloud 3"
-          className="absolute top-[50%] left-[-25%] w-[900px] animate-cloud3"
+          className="absolute -top-[30%] left-[25%] w-[1900px] animate-cloud3"
         />
         <img
-          src="/cloud4.svg"
+          src="/cloud4.png"
           alt="Cloud 4"
-          className="absolute top-[70%] right-[-25%] w-[1000px] animate-cloud4"
+          className="absolute top-[20%] right-[-15%] w-[2000px] animate-cloud4"
+        />
+        <img
+          src="/bunny.png"
+          alt="bunny"
+          className="absolute top-[10%] w-[800px] right-[50%] "
         />
         <TransitionOverlay isActive={isTransitioning} />
         <div className="login-container bg-white/40 backdrop-blur-lg rounded-xl flex flex-col items-center fadeIn max-w-sm p-12 gap-4">
@@ -119,7 +123,10 @@ export default function LogoutPage() {
             {formatted.minutes}
           </p>
         </div>
-        <p className=" text-white animate-pulse mt-4"> Press space or tap to enter</p>
+        <p className=" text-white animate-pulse mt-4">
+          {" "}
+          Press space or tap to enter
+        </p>
       </div>
     </section>
   );

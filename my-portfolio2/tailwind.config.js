@@ -22,7 +22,7 @@ const config = {
           linear-gradient(180deg, #acbedd 0%, #f5d8c8 100%, #c6ccdf 100%)
         `,
         "divider-top": `url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 100.86 4.15'><path fill='%23fbd8c2' d='M0 0v3.5a9.07 9.07 0 0 0 9.37-1.67 9.07 9.07 0 0 0 12.1 0 9.07 9.07 0 0 0 12.11 0 9.07 9.07 0 0 0 12.06 0 9.07 9.07 0 0 0 12.11 0 9.07 9.07 0 0 0 12.08 0 9.07 9.07 0 0 0 12.09 0 9.07 9.07 0 0 0 12.08 0 9.07 9.07 0 0 0 6.86 2.28V.01z'/></svg>")`,
-        logout: "url('/logoutbg.svg')",
+        logout: "url('/bg.png')",
       },
 
       backgroundSize: {
@@ -37,15 +37,15 @@ const config = {
           "100%": { transform: "translateX(200%)" },
         },
         cloud2: {
-          "0%": { transform: "translateX(-100%)" },
+          "0%": { transform: "translateX(-50%)" },
           "100%": { transform: "translateX(200%)" },
         },
         cloud3: {
-          "0%": { transform: "translateX(-100%)" },
+          "0%": { transform: "translateX(-70%)" },
           "100%": { transform: "translateX(200%)" },
         },
         cloud4: {
-          "0%": { transform: "translateX(-100%)" },
+          "0%": { transform: "translateX(-90%)" },
           "100%": { transform: "translateX(200%)" },
         },
         "fade-in": {
@@ -67,7 +67,7 @@ const config = {
       },
       animation: {
         cloud1: "cloud1 60s linear infinite",
-        cloud2: "cloud2 60s linear infinite",
+        cloud2: "cloud2 80s linear infinite",
         cloud3: "cloud3 60s linear infinite",
         cloud4: "cloud4 60s linear infinite",
         "fade-in": "fade-in 0.3s ease-in-out",
