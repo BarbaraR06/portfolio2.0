@@ -45,6 +45,7 @@
   "experience": {
     "career": "Career",
     "experience": "Experience",
+    "technologies": "Technologies",
     "education": {
       "ciberSecurity": {
         "title": "Degree in Cybersecurity",
@@ -56,11 +57,9 @@
         "institution": "Universidad Nacional Del Litoral",
         "period": "2025-present"
       }
-
     },
-
     "opengrano": {
-      "title": "Frontend Developer",
+      "title": "Frontend Developer Internship",
       "company": "Opengrano",
       "companyLink": "https://www.opengrano.com/",
       "platform": "Web3 Platform",
@@ -74,7 +73,7 @@
       ]
     },
     "fisioahora": {
-      "title": "Frontend Developer",
+      "title": "Frontend Developer Internship",
       "company": "FisioAhora",
       "internship": "Internship at",
       "footalent": "Foo Talent Group",
@@ -85,6 +84,13 @@
         "Developing search functionality with filters using Node.js",
         "Deploying and configuring the application deployment"
       ]
+    },
+    "stack": {
+      "languages": ["JavaScript", "TypeScript", "Java", "Python"],
+      "frameworks": ["React", "Next.js", "Node.js", "TailwindCSS"],
+      "databases": ["MySQL", "MongoDB"],
+      "tools": ["Git", "GitHub", "Figma"],
+      "devApiTools": ["Postman", "HTTP Toolkit"]
     }
   }
 }
