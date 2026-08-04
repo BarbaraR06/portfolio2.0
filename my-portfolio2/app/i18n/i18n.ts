@@ -17,7 +17,7 @@ if (!i18n.isInitialized) {
     lng: "en",
     fallbackLng: "en",
     defaultNS: "home",
-    ns: ["home", "footer", "about-me", "shutdown", "login", "music-player", "work", "education"],
+    ns: ["home", "footer", "about-me", "shutdown", "login", "work", "education"],
     interpolation: {
       escapeValue: false,
     },

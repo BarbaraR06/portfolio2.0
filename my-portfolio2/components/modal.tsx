@@ -6,6 +6,7 @@ type ModalProps = {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  backgroundClass?: string;
 };
 
 export default function Modal({
@@ -13,6 +14,7 @@ export default function Modal({
   onMinimize,
   onClose,
   children,
+  backgroundClass = "bg-white",
 }: ModalProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -87,11 +89,11 @@ export default function Modal({
   return (
     <div
       ref={modalRef}
-      className="fixed top-20 left-20 w-[60%] min-h-[30%] max-h-[90vh] lg:w-[40%] bg-white rounded-xl z-30 overflow-hidden
+      className={`fixed top-20 left-20 w-[60%] min-h-[30%] max-h-[90vh] lg:w-[40%] ${backgroundClass} rounded-xl z-30 overflow-hidden
                data-[state=open]:animate-in data-[state=closed]:animate-out
                data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
                data-[state=closed]:slide-out-to-left-1/2 data-[state=open]:slide-in-from-left-1/2
-               duration-300"
+               duration-300 `}
       data-state="open"
     >
       <div
@@ -109,7 +111,7 @@ export default function Modal({
           </button>
         </div>
       </div>
-      <div className="p-4 overflow-y-auto max-h-[calc(85vh-2.5rem)] custom-scrollbar">
+      <div className="p-4 overflow-y-auto max-h-[calc(85vh-2.5rem)] scrollbar-none">
         {children}
       </div>
     </div>

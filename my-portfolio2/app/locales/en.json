@@ -1,7 +1,7 @@
 {
   "home": {
     "education": "Education",
-    "work": "Work",
+    "experience": "Experience",
     "about": "About Me",
     "email": "Email",
     "github": "Github",
@@ -31,19 +31,6 @@
     "welcome": "Welcome!",
     "signIn": "SIGN IN"
   },
-  "music-player": {
-    "minimize": "Minimize player",
-    "volume": "Volume",
-    "previous": "Previous song",
-    "next": "Next song",
-    "play": "Play",
-    "pause": "Pause",
-    "login_with_spotify": "Do you want to login with Spotify?", 
-    "login_spotify": "Login",
-    "loading": "Loading...",
-    "cancel": "Cancel", 
-    "title": "Music Player"
-  },
   "resume": {
     "title": "Resume",
     "download": "Do you want to download my resume?",
@@ -55,7 +42,23 @@
     "opengrano": "Opengrano Platform",
     "game": "Rock, Paper, Scissors"
   },
-  "work": {
+  "experience": {
+    "career": "Career",
+    "experience": "Experience",
+    "education": {
+      "ciberSecurity": {
+        "title": "Degree in Cybersecurity",
+        "institution": "Facultad de la Defensa Nacional",
+        "period": "2026-present"
+      },
+      "computerScience": {
+        "title": "Associate Degree in Computer Science Applied to Multimedia and Website Design",
+        "institution": "Universidad Nacional Del Litoral",
+        "period": "2025-present"
+      }
+
+    },
+
     "opengrano": {
       "title": "Frontend Developer",
       "company": "Opengrano",
@@ -63,7 +66,7 @@
       "platform": "Web3 Platform",
       "theBadge": "TheBadge",
       "theBadgeLink": "https://www.thebadge.xyz/",
-      "period": "July 2024 - present",
+      "period": "July 2024 - August 2025",
       "responsibilities": [
         "Design and develop reusable frontend components using React, Next.js, TailwindCSS, and TypeScript.",
         "Configure translations in multiple languages with i18n.",
@@ -82,18 +85,6 @@
         "Developing search functionality with filters using Node.js",
         "Deploying and configuring the application deployment"
       ]
-    }
-  },
-  "education": {
-    "computerScience": {
-      "title": "Degree in Computer Science Applied to Multimedia and Website Design",
-      "institution": "Universidad Nacional Del Litoral",
-      "period": "2025-present"
-    },
-    "industrialDesign": {
-      "title": "Bachelor's degree in Industrial Design",
-      "institution": "Universidad Nacional Del Litoral",
-      "period": "2015-present"
     }
   }
 }

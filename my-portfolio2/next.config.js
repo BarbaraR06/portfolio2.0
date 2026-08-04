@@ -46,10 +46,6 @@ const nextConfig = {
 
   // Variables de entorno
   env: {
-    NEXT_PUBLIC_SPOTIFY_CLIENT_ID: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
-    SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
-    NEXT_PUBLIC_SPOTIFY_REDIRECT_URI:
-      process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     // Expose OpenWeather API key for the weather widget in the client
     NEXT_PUBLIC_OPENWEATHER_KEY: process.env.NEXT_PUBLIC_OPENWEATHER_KEY,
@@ -59,17 +55,6 @@ const nextConfig = {
 
   experimental: {
     esmExternals: "loose",
-    serverComponentsExternalPackages: ["spotify-web-api-node"],
-  },
-
-  // Ensure cookies work properly
-  async rewrites() {
-    return [
-      {
-        source: "/api/spotify/callback",
-        destination: "/api/spotify/callback",
-      },
-    ];
   },
 };
 

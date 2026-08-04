@@ -1,34 +1,28 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Education from "../education";
 import Email from "../email";
-import Work from "../work";
+import Experience from "../experience";
 import Resume from "../resume";
 import Github from "../github";
-import AboutMe from "../about-me";
 import Spotify from "../spotify";
 import Behance from "../behance";
 import Projects from "@/projects";
 
 import Modal from "@/components/modal";
 import EducationModal from "@/components/modals/education";
-import WorkModal from "@/components/modals/work";
+import ExperienceModal from "@/components/modals/experience";
 import EmailModal from "@/components/modals/email";
 import GithubModal from "@/components/modals/github";
 import ResumeModal from "@/components/modals/resume";
-import AboutMeModal from "@/components/modals/about";
 import SpotifyModal from "@/components/modals/spotify";
 import BehanceModal from "@/components/modals/behance";
 import ProjectsModal from "@/components/modals/projects";
 import TransitionOverlay from "@/components/TransitionOverlay";
 import Footer from "@/app/footer";
-import { useClickSound } from "@/hooks/click";
-import MusicPlayer from "@/app/spotify/MusicPlayer";
-import SpotifyLogin from "@/components/modals/spotify-login";
-import { useSpotify } from "@/hooks/useSpotify";
+// import { useClickSound } from "@/hooks/click";
 
 export default function Home() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -36,45 +30,19 @@ export default function Home() {
   const [minimizedTabs, setMinimizedTabs] = useState<string[]>([]);
   const [iconsInFooter, setIconsInFooter] = useState<string[]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
-  const [isSpotifyLoginOpen, setIsSpotifyLoginOpen] = useState(false);
-  const { accessToken, isAuthenticated, loading } = useSpotify();
 
-  const clickSound = useClickSound();
+  // const clickSound = useClickSound();
 
   const { t } = useTranslation("home");
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // Auto-abrir el reproductor al volver de Spotify (/home?spotify=1)
-  useEffect(() => {
-    const shouldOpen = searchParams?.get("spotify") === "1";
-    if (!shouldOpen) return;
-
-    setIsMusicPlayerOpen(true);
-    setIconsInFooter((prev) => (prev.includes("Spotify") ? prev : [...prev, "Spotify"]));
-    // Limpia el query param de la URL
-    router.replace("/home");
-  }, [searchParams, router]);
 
   const handleClick = (key: string) => {
     setSelected((prev) => (prev === key ? null : key));
   };
 
   const handleDoubleClick = (key: string) => {
-    if (key === "Spotify") {
-      if (!isAuthenticated) {
-        setIsSpotifyLoginOpen(true);
-        return;
-      }
-      setOpenTab(null);
-      setIconsInFooter((prev) => (!prev.includes(key) ? [...prev, key] : prev));
-      setIsMusicPlayerOpen(true);
-    } else {
-      setOpenTab(key);
-      setIconsInFooter((prev) => (!prev.includes(key) ? [...prev, key] : prev));
-      setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
-    }
+    setOpenTab(key);
+    setIconsInFooter((prev) => (!prev.includes(key) ? [...prev, key] : prev));
+    setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
   };
 
   const handleMinimizeTab = (key: string) => {
@@ -85,37 +53,21 @@ export default function Home() {
 
   const handleRestoreTab = (key: string) => {
     setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
-    if (key === "Spotify") {
-      setIsMusicPlayerOpen(true);
-      setOpenTab(null);
-    } else {
-      setOpenTab(key);
-    }
+    setOpenTab(key);
   };
 
   const handleCloseTab = (key: string) => {
     setOpenTab(null);
     setIconsInFooter((prev) => prev.filter((tab) => tab !== key));
     setMinimizedTabs((prev) => prev.filter((tab) => tab !== key));
-    if (key === "Spotify") {
-      setIsMusicPlayerOpen(false);
-    }
   };
 
   const modalComponents: Record<string, React.ReactNode> = {
     Education: <EducationModal />,
-    Work: <WorkModal />,
-    AboutMe: <AboutMeModal />,
+    Experience: <ExperienceModal />,
     Email: <EmailModal />,
     Github: <GithubModal />,
-    Spotify: (
-      <SpotifyModal
-        onDoubleClick={() => {
-          setIsMusicPlayerOpen(true);
-          handleCloseTab("Spotify");
-        }}
-      />
-    ),
+    Spotify: <SpotifyModal />,
     Behance: <BehanceModal />,
     Projects: <ProjectsModal />,
     Resume: (
@@ -137,14 +89,6 @@ export default function Home() {
       <div className="fixed inset-0 bg-grid-pattern bg-grid-size opacity-50" />{" "}
       //background
       <TransitionOverlay isActive={isTransitioning} />
-      {isMusicPlayerOpen && (
-        <div className="fixed left-[60%] z-50">
-          <MusicPlayer
-            onClose={() => handleCloseTab("Spotify")}
-            onMinimize={() => handleMinimizeTab("Spotify")}
-          />
-        </div>
-      )}
       */Icons/*
       <div className="relative">
         <div className="grid grid-cols-2 gap-4 w-full max-w-[400px] text-defaultText ">
@@ -154,14 +98,17 @@ export default function Home() {
               key: "Education",
               label: t("education"),
             },
-            { component: <Work />, key: "Work", label: t("work") },
+            {
+              component: <Experience />,
+              key: "Experience",
+              label: t("experience"),
+            },
             { component: <Email />, key: "Email", label: t("email") },
             { component: <Projects />, key: "Projects", label: t("projects") },
             { component: <Github />, key: "Github", label: t("github") },
             { component: <Resume />, key: "Resume", label: t("resume") },
             { component: <Spotify />, key: "Spotify", label: t("spotify") },
             { component: <Behance />, key: "Behance", label: t("behance") },
-            { component: <AboutMe />, key: "AboutMe", label: t("about") },
           ].map((item) => (
             <div
               key={item.key}
@@ -174,7 +121,7 @@ export default function Home() {
               onClick={(e) => {
                 e.stopPropagation();
                 handleClick(item.key);
-                clickSound();
+                // clickSound();
               }}
               onDoubleClick={() => handleDoubleClick(item.key)}
             >
@@ -193,16 +140,12 @@ export default function Home() {
           title={t(openTab)}
           onClose={() => handleCloseTab(openTab)}
           onMinimize={() => handleMinimizeTab(openTab)}
+          backgroundClass={
+            openTab === "Experience" ? "bg-[radial-gradient(circle_at_center,_#E8F5FC_0%,_#C0E4F7_100%)]" : "bg-whiteText"
+          }
         >
           {modalComponents[openTab] || null}
         </Modal>
-      )}
-      {isSpotifyLoginOpen && (
-        <SpotifyLogin
-          isOpen={isSpotifyLoginOpen}
-          onClose={() => setIsSpotifyLoginOpen(false)}
-          onMinimize={() => setIsSpotifyLoginOpen(false)}
-        />
       )}
       <Footer
         iconsInFooter={iconsInFooter}

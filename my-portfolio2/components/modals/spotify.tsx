@@ -1,14 +1,4 @@
 
-
-export default function SpotifyModal({
-  onDoubleClick,
-}: {
-  onDoubleClick?: () => void;
-}) {
-  return (
-    <div
-      className="text-defaultText font-bold flex justify-center w-full h-full cursor-pointer"
-      onDoubleClick={onDoubleClick}
-    ></div>
-  );
+export default function SpotifyModal() {
+  return <div className="text-defaultText font-bold flex justify-center w-full h-full" />;
 }

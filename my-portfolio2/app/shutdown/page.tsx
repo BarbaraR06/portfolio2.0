@@ -18,7 +18,7 @@ export default function ShutdownPage() {
     const triggerTransition = () => {
       setIsTransitioning(true);
       setTimeout(() => {
-        router.push("/");
+        router.push("/home");
       }, 500);
     };
 
@@ -53,14 +53,14 @@ export default function ShutdownPage() {
   return (
     <div className="relative w-screen h-screen">
       <TransitionOverlay isActive={isTransitioning} />
-      <div className="absolute inset-0 bg-[#68254b] bg-opacity-90" />
+      <div className="absolute inset-0 bg-[#dba4c4] bg-opacity-90" />
       <div className="relative z-10 w-full h-full flex items-center justify-center flex-col">
         <img
-          alt="Pixel Sleep"
+          alt="Sleep"
           className="w-[30%] h-[30%]"
-          src="/pixelSleep.svg"
+          src="/sleep.png"
         />
-        <div className="text-white text-xl text-center">
+        <div className="text-white text-xl text-center font-mono">
           <p>{t("shakeMouse")}</p>
           <p>{t("orClick")}</p>
         </div>

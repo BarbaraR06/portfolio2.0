@@ -91,7 +91,7 @@ export default function LogoutPage() {
         <img
           src="/cloud1.png"
           alt="Cloud 1"
-          className="absolute top-[5%] left-[-20%] w-[900px] animate-cloud1"
+          className="absolute top-[5%] left-[40%] w-[1900px] animate-cloud1"
         />
         <img
           src="/cloud2.png"
@@ -101,7 +101,7 @@ export default function LogoutPage() {
         <img
           src="/cloud3.png"
           alt="Cloud 3"
-          className="absolute -top-[30%] left-[25%] w-[1900px] animate-cloud3"
+          className="absolute -top-[30%] left-[5%] w-[2300px] animate-cloud3"
         />
         <img
           src="/cloud4.png"

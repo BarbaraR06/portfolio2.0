@@ -1,7 +1,7 @@
 {
   "home": {
     "education": "Educación",
-    "work": "Trabajo",
+    "experience": "Experiencia",
     "about": "Sobre mí",
     "email": "Correo",
     "github": "Github",
@@ -31,19 +31,6 @@
     "welcome": "Bienvenida!",
     "signIn": "INICIAR SESIÓN"
   },
- "music-player": {
-    "minimize": "Minimizar reproductor",
-    "volume": "Volumen",
-    "previous": "Canción anterior",
-    "next": "Siguiente canción",
-    "play": "Reproducir",
-    "pause": "Pausar", 
-    "login_with_spotify": "¿Quieres iniciar sesión con Spotify?",
-    "login_spotify": "Iniciar sesión",
-    "loading": "Cargando...",
-    "cancel": "Cancelar", 
-    "title": "Reproductor de música"
-  },
   "resume": {
     "title": "Curriculum",
     "download": "¿Querés descargar mi currículum?",
@@ -51,11 +38,25 @@
     "no": "No",
     "downloaded": "Descargado"
   },
-    "projects": {
+  "projects": {
     "opengrano": "Plataforma Opengrano",
     "game": "Piedra, papel o tijera"
   },
-  "work": {
+  "experience": {
+    "career": "Carrera",
+    "experience": "Experiencia",
+    "education": {
+      "ciberSecurity": {
+        "title": "Licenciatura en Ciberdefensa",
+        "institution": "Facultad de la Defensa Nacional",
+        "period": "2026-presente"
+      },
+      "computerScience": {
+        "title": "Tecnicatura en Informática Aplicada al Diseño Multimedia y de Sitios Web",
+        "institution": "Universidad Nacional Del Litoral",
+        "period": "2025-presente"
+      }
+    },
     "opengrano": {
       "title": "Desarrolladora Frontend",
       "company": "Opengrano",
@@ -63,7 +64,7 @@
       "platform": "Plataforma Web3",
       "theBadge": "TheBadge",
       "theBadgeLink": "https://www.thebadge.xyz/",
-      "period": "Julio 2024 - presente",
+      "period": "Julio 2024 - Agosto 2025",
       "responsibilities": [
         "Diseño y desarrollo de componentes frontend reutilizables usando React, Next.js, TailwindCSS y TypeScript.",
         "Configuración de traducciones en múltiples idiomas con i18n.",
@@ -85,6 +86,11 @@
     }
   },
   "education": {
+    "ciberSecurity": {
+      "title": "Licenciatura en Ciberdefensa",
+      "institution": "Facultad de la Defensa Nacional",
+      "period": "2026-presente"
+    },
     "computerScience": {
       "title": "Tecnicatura en Informática Aplicada al Diseño Multimedia y de Sitios Web",
       "institution": "Universidad Nacional Del Litoral",

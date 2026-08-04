@@ -17,7 +17,7 @@ type FooterProps = {
 
 const iconPaths: Record<string, string> = {
   Education: "/education.svg",
-  Work: "/work.svg",
+  Experience: "/experience.svg",
   AboutMe: "/about.svg",
   Email: "/mail.svg",
   Github: "/github.svg",
@@ -73,7 +73,7 @@ export default function Footer({
             `origin-bottom transform transition-transform duration-700 ease-in-out ` +
             (isMenuOpen
               ? "scale-y-100 delay-0"
-              : "delay-250 scale-y-0 pointer-events-none")
+              : "delay-350 scale-y-0 pointer-events-none")
           }
         >
           <div
@@ -82,34 +82,70 @@ export default function Footer({
               (isMenuOpen ? "opacity-100 delay-700" : "opacity-0 delay-0")
             }
           >
-            <div className="flex justify-start items-center">
-              <Image alt="Shutdown icon" src="/shut-down.svg" width={24} height={24} />
-              <button
-                className="hover:bg-[#e3cadb] w-[95%] text-left m-2 p-2 rounded-lg"
-                onClick={handleShutdown}
+            <div className="overflow-hidden">
+              <div
+                className={`flex justify-start items-center transform transition-all duration-500 ease-out ${
+                  isMenuOpen
+                    ? "translate-y-0 opacity-100 delay-500"
+                    : "translate-y-full opacity-0 delay-0"
+                }`}
               >
-                {t("shutdown")}
-              </button>
+                <Image
+                  alt="Shutdown icon"
+                  src="/shut-down.svg"
+                  width={24}
+                  height={24}
+                />
+
+                <button
+                  className="hover:bg-[#e3cadb] w-[95%] text-left m-2 p-2 rounded-lg"
+                  onClick={handleShutdown}
+                >
+                  {t("shutdown")}
+                </button>
+              </div>
             </div>
-            <div className="flex justify-start items-center">
-              <Image alt="Logout icon" src="/logout.svg" width={24} height={24} />
-              <button
-                className="hover:bg-[#e3cadb] w-[95%] text-left m-2 p-2 rounded-lg"
-                onClick={handleLogout}
+            <div className="overflow-hidden">
+              <div
+                className={`flex justify-start items-center transform transition-all duration-500 ease-out ${
+                  isMenuOpen
+                    ? "translate-y-0 opacity-100 delay-500"
+                    : "translate-y-full opacity-0 delay-0"
+                }`}
               >
-                {t("logout")}
-              </button>
+                <Image
+                  alt="Logout icon"
+                  src="/logout.svg"
+                  width={24}
+                  height={24}
+                />
+
+                <button
+                  className="hover:bg-[#e3cadb] w-[95%] text-left m-2 p-2 rounded-lg"
+                  onClick={handleLogout}
+                >
+                  {t("logout")}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-        <div className="flex ">
+        <div className="flex items-center">
           {iconsInFooter.map((tab) => (
             <button
               key={tab}
-              className="bg-[#e3cadb] p-4 hover:bg-[#552445] transition-colors"
+              className="flex flex-row items-center justify-center gap-2 shrink-0 h-14 px-3 bg-[#e3cadb] hover:bg-[#552445] transition-colors"
               onClick={() => onRestoreTab(tab)}
             >
-              <img alt={tab} className="w-6 h-6" src={iconPaths[tab]} />
+              <img
+                src={iconPaths[tab]}
+                alt={`${tab} icon`}
+                className="block w-6 h-6 shrink-0"
+              />
+
+              <span className="block whitespace-nowrap text-defaultText font-bold">
+                {tab}
+              </span>
             </button>
           ))}
         </div>
